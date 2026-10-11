@@ -118,6 +118,10 @@ class HotelResource extends Resource
                         Forms\Components\TextInput::make('distance_trail_m')->label('До тропы')->numeric()->minValue(0)->suffix('м'),
                         Forms\Components\TextInput::make('distance_river_m')->label('До реки')->numeric()->minValue(0)->suffix('м'),
                     ]),
+                    Forms\Components\ViewField::make('map_x')->label('Точка на рисованной карте')
+                        ->view('filament.forms.map-picker')->columnSpanFull()
+                        ->helperText('Нажмите на место объекта на картинке. Чтобы убрать точку, нажмите «Убрать с карты».'),
+                    Forms\Components\Hidden::make('map_y'),
                     Forms\Components\TextInput::make('lat')->label('Широта')->numeric()->minValue(-90)->maxValue(90)->placeholder('52.0000000'),
                     Forms\Components\TextInput::make('lng')->label('Долгота')->numeric()->minValue(-180)->maxValue(180)->placeholder('103.0000000'),
                 ]),
