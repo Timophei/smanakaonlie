@@ -9,6 +9,28 @@ document.querySelectorAll('[data-map]').forEach((map) => {
   const targets = map.querySelectorAll('.imap-zone, .imap-pin');
   let pinned = null;
 
+  // Свёрнутая карта на главной: кнопка «Развернуть» открывает её целиком,
+  // «Свернуть» остаётся на виду при прокрутке, пока карта раскрыта.
+  const expandButton = map.querySelector('[data-map-expand]');
+  const collapseButton = map.querySelector('[data-map-collapse]');
+  const setCollapsed = (collapsed) => {
+    map.classList.toggle('is-collapsed', collapsed);
+    expandButton.hidden = !collapsed;
+    collapseButton.hidden = collapsed;
+    expandButton.setAttribute('aria-expanded', String(!collapsed));
+    if (collapsed) {
+      hide();
+      map.scrollIntoView({ block: 'nearest' });
+      expandButton.focus({ preventScroll: true });
+    } else {
+      collapseButton.focus({ preventScroll: true });
+    }
+  };
+  if (expandButton && collapseButton) {
+    expandButton.addEventListener('click', (event) => { event.stopPropagation(); setCollapsed(false); });
+    collapseButton.addEventListener('click', (event) => { event.stopPropagation(); setCollapsed(true); });
+  }
+
   // На узком экране карта шире окна: открываем её по центру, дальше двигают пальцем
   const scroller = map.querySelector('.imap-scroll');
   scroller.scrollLeft = (scroller.scrollWidth - scroller.clientWidth) / 2;

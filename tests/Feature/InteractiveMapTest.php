@@ -23,6 +23,12 @@ class InteractiveMapTest extends TestCase
         $this->get('/')->assertOk()->assertSee('data-map', false);
     }
 
+    public function test_map_is_collapsed_on_home_and_open_on_its_own_page(): void
+    {
+        $this->get('/')->assertSee('data-collapsible', false)->assertSee('Развернуть карту')->assertSee('Свернуть карту');
+        $this->get('/karta')->assertDontSee('data-collapsible', false);
+    }
+
     public function test_map_shows_pins_only_for_published_places_with_a_point(): void
     {
         $onMap = Place::factory()->create(['map_x' => 40.5, 'map_y' => 37.85]);
