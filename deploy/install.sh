@@ -27,9 +27,12 @@ say "Проверяю, что на сервере есть всё нужное"
 command -v php >/dev/null || die "не найден php"
 command -v git >/dev/null || die "не найден git: apt install git"
 command -v composer >/dev/null || die "не найден composer: apt install composer"
+# Список модулей читаем один раз: в связке «php -m | grep -q» при pipefail
+# grep закрывает канал раньше времени, и проверка случайно срабатывает ложно.
+php_modules="$(php -m)"
 missing=()
 for ext in intl mbstring xml curl zip gd pdo_sqlite fileinfo; do
-    php -m | grep -qix "$ext" || missing+=("$ext")
+    grep -qix "$ext" <<<"$php_modules" || missing+=("$ext")
 done
 if [ ${#missing[@]} -gt 0 ]; then
     die "в PHP не хватает расширений: ${missing[*]}. Поставьте, например: apt install php8.3-intl php8.3-sqlite3 php8.3-gd php8.3-zip php8.3-xml php8.3-mbstring php8.3-curl && systemctl restart php8.3-fpm"
