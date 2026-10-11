@@ -8,7 +8,16 @@
         ->orderBy('map_y')
         ->get(['id', 'title', 'path', 'category', 'short_description', 'map_x', 'map_y']);
 @endphp
-<div class="imap" data-map>
+<div class="imap @if($collapsible ?? false) is-collapsed @endif" data-map @if($collapsible ?? false) data-collapsible @endif>
+    @if ($collapsible ?? false)
+        <noscript><style>.imap.is-collapsed .imap-scroll { max-height: none; } .imap.is-collapsed .imap-canvas { margin-top: 0; } .imap-expand { display: none; }</style></noscript>
+        <div class="imap-bar">
+            <button type="button" class="btn imap-collapse" data-map-collapse hidden>Свернуть карту</button>
+        </div>
+        <button type="button" class="imap-expand" data-map-expand aria-expanded="false">
+            <span class="btn"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>Развернуть карту</span>
+        </button>
+    @endif
     <div class="imap-scroll">
         <div class="imap-canvas" style="aspect-ratio: {{ $map['width'] }} / {{ $map['height'] }}">
             <img src="{{ $map['image'] }}" width="{{ $map['width'] }}" height="{{ $map['height'] }}"
