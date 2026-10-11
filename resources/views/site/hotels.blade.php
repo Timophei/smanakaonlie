@@ -5,7 +5,7 @@
 
 @section('content')
     <nav class="crumbs" aria-label="Хлебные крошки">
-        <a href="{{ route('home') }}">Главная</a><span>/</span><span>Жильё</span>
+        <a href="/">Главная</a><span>/</span><span>Жильё</span>
     </nav>
 
     <div class="stack">
@@ -15,9 +15,9 @@
 
     @if ($tags->isNotEmpty())
         <nav class="filters" aria-label="Фильтр жилья">
-            <a class="filter" href="{{ route('hotels') }}" @if(! $tag) aria-current="true" @endif>Все</a>
+            <a class="filter" href="{{ route('hotels', absolute: false) }}/" @if(! $tag) aria-current="true" @endif>Все</a>
             @foreach ($tags as $item)
-                <a class="filter" href="{{ route('hotels', ['tag' => $item->id]) }}" @if($tag?->is($item)) aria-current="true" @endif>{{ $item->name }}</a>
+                <a class="filter" href="{{ route('hotels', ['tag' => $item->id], false) }}" @if($tag?->is($item)) aria-current="true" @endif>{{ $item->name }}</a>
             @endforeach
         </nav>
     @endif
@@ -26,12 +26,12 @@
         @forelse ($places as $place)
             <article class="card place">
                 @if ($place->cover)
-                    <img class="place-photo" src="{{ asset('storage/'.$place->cover) }}" alt="{{ $place->title }}" loading="lazy">
+                    <img class="place-photo" src="{{ '/storage/'.$place->cover }}" alt="{{ $place->title }}" loading="lazy">
                 @else
                     <div class="place-photo photo-empty">Фото скоро появится</div>
                 @endif
                 <div class="place-info">
-                    <h2><a href="{{ url($place->path) }}">{{ $place->title }}</a></h2>
+                    <h2><a href="{{ route('place', $place->path, false) }}/">{{ $place->title }}</a></h2>
                     @if ($place->address)<div class="small muted">{{ $place->address }}</div>@endif
                     @if ($place->short_description)<p>{{ $place->short_description }}</p>@endif
                     <div class="chips">
@@ -43,19 +43,19 @@
                 </div>
                 <div class="place-side">
                     @include('site.partials.price', ['place' => $place, 'class' => 'price'])
-                    <a class="btn" href="{{ url($place->path) }}">Подробнее</a>
+                    <a class="btn" href="{{ route('place', $place->path, false) }}/">Подробнее</a>
                 </div>
             </article>
 
             @if ($loop->iteration === 2 || ($loop->last && $loop->count < 2))
-                <a class="promo" href="/uslugi/Bani">
-                    <img src="{{ asset('img/service-bani.jpg') }}" alt="" loading="lazy">
+                <a class="promo" href="/uslugi/Bani/">
+                    <img src="/img/service-bani.jpg" alt="" loading="lazy">
                     <span><span class="small" style="font-weight: 600; color: #8a3f06">К жилью в придачу</span><b>После тропы — в баню</b>Бани в Шаманке для отдыха вдвоём, семьёй или компанией.</span>
                     <span class="more">Смотреть бани <svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></span>
                 </a>
             @endif
         @empty
-            <div class="card card-body">По этому фильтру пока ничего нет. <a href="{{ route('hotels') }}">Показать всё жильё</a></div>
+            <div class="card card-body">По этому фильтру пока ничего нет. <a href="{{ route('hotels', absolute: false) }}/">Показать всё жильё</a></div>
         @endforelse
     </div>
 

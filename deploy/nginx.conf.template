@@ -1,0 +1,35 @@
+# Шаманка.online — сайт на Laravel. Файл собирается скриптом deploy/install.sh:
+# подставляются домен, папка сайта и сокет PHP-FPM.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMAIN__;
+
+    root __APP_DIR__/public;
+    index index.php;
+    charset utf-8;
+
+    # Фото объектов загружаются через админку пачками
+    client_max_body_size 64m;
+
+    __NOINDEX__
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    location ~ ^/index\.php(/|$) {
+        include fastcgi_params;
+        fastcgi_pass unix:__PHP_SOCK__;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param PHP_VALUE "upload_max_filesize=16M \n post_max_size=64M";
+        fastcgi_hide_header X-Powered-By;
+    }
+
+    # Остальные .php напрямую не исполняются; скрытые файлы закрыты
+    location ~ \.php$ { return 404; }
+    location ~ /\.(?!well-known) { deny all; }
+}

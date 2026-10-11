@@ -4,7 +4,7 @@
     use App\Models\OwnerContact;
     use App\Models\Place;
 
-    $photo = fn (string $path) => asset('storage/'.$path);
+    $photo = fn (string $path) => '/storage/'.$path;
     $gallery = $place->gallery ?? [];
     $facts = array_filter([
         'Тип' => Place::HOTEL_TYPES[$place->type] ?? null,
@@ -25,7 +25,7 @@
 
 @section('content')
     <nav class="crumbs" aria-label="Хлебные крошки">
-        <a href="{{ route('home') }}">Главная</a><span>/</span><a href="{{ route('hotels') }}">Жильё</a><span>/</span><span>{{ $place->title }}</span>
+        <a href="/">Главная</a><span>/</span><a href="{{ route('hotels', absolute: false) }}/">Жильё</a><span>/</span><span>{{ $place->title }}</span>
     </nav>
 
     <div class="stack">
@@ -117,12 +117,12 @@
             @if ($place->price_note)<div class="small muted">{{ $place->price_note }}</div>@endif
 
             @if ($place->owner?->phone)
-                <button type="button" class="btn" data-phone-url="{{ route('place.phone', $place) }}" data-token="{{ csrf_token() }}">
+                <button type="button" class="btn" data-phone-url="{{ route('place.phone', $place, false) }}" data-token="{{ csrf_token() }}">
                     <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-label>Показать телефон</span>
                 </button>
             @endif
             @foreach ($place->owner?->contacts ?? [] as $contact)
-                <a class="btn-outline" href="{{ route('place.contact', [$place, $contact]) }}" rel="nofollow noopener" target="_blank">
+                <a class="btn-outline" href="{{ route('place.contact', [$place, $contact], false) }}" rel="nofollow noopener" target="_blank">
                     {{ $contact->type === 'site' ? 'Сайт хозяина' : 'Написать в '.(OwnerContact::TYPES[$contact->type] ?? 'мессенджер') }}
                 </a>
             @endforeach
@@ -135,5 +135,5 @@
         </aside>
     </div>
 
-    <a class="more" href="{{ route('hotels') }}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Всё жильё в Шаманке</a>
+    <a class="more" href="{{ route('hotels', absolute: false) }}/"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Всё жильё в Шаманке</a>
 @endsection

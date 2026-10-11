@@ -2,8 +2,8 @@
 
 @section('header')
     <header class="header" style="border-bottom: 0; padding-bottom: 0">
-        <a class="brand brand--big" href="{{ route('home') }}">
-            <img src="{{ asset('img/logo.jpg') }}" alt="" width="72" height="72">
+        <a class="brand brand--big" href="/">
+            <img src="/img/logo.jpg" alt="" width="72" height="72">
             <span>Открой Шаманку<small>Тропы, утёс и жизнь на берегу Иркута.</small></span>
         </a>
         @include('site.partials.nav')
@@ -22,7 +22,7 @@
         </div>
         <div style="flex: 1 1 220px" class="small">
             Выберите маршрут для прогулки или останьтесь на выходные.<br>
-            <a class="more" href="/stati/transport">Как добраться <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="more" href="/stati/transport/">Как добраться <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
     </div>
 
@@ -32,14 +32,14 @@
             <span class="small muted">Схема местности</span>
         </div>
         <div class="card map">
-            <img src="{{ asset('img/map.jpg') }}" alt="Рисованная схема Шаманки: Шаманский утёс, река Шаманка, Иркут, паромная переправа и подвесной мост">
+            <img src="/img/map.jpg" alt="Рисованная схема Шаманки: Шаманский утёс, река Шаманка, Иркут, паромная переправа и подвесной мост">
             <div class="between"><span>Утёс · Реки · Мост · Паром</span></div>
         </div>
         <div class="row" style="gap: 14px">
-            <a class="card quick" href="/stati/tropa"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-hike"/></svg></span><span class="grow"><b>Тропа «Шаманка»</b><span class="small muted">Прогулка к утёсу</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
-            <a class="card quick" href="/stati/LesChudes"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-tree"/></svg></span><span class="grow"><b>Лес чудес</b><span class="small muted">Лес и поляна</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
-            <a class="card quick" href="/stati/na_piknik"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-table"/></svg></span><span class="grow"><b>На пикник</b><span class="small muted">Отдых у реки</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
-            <a class="card quick" href="/stati/transport"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-bus"/></svg></span><span class="grow"><b>Как добраться</b><span class="small muted">Автобус, машина, паром</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
+            <a class="card quick" href="/stati/tropa/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-hike"/></svg></span><span class="grow"><b>Тропа «Шаманка»</b><span class="small muted">Прогулка к утёсу</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
+            <a class="card quick" href="/stati/LesChudes/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-tree"/></svg></span><span class="grow"><b>Лес чудес</b><span class="small muted">Лес и поляна</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
+            <a class="card quick" href="/stati/na_piknik/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-table"/></svg></span><span class="grow"><b>На пикник</b><span class="small muted">Отдых у реки</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
+            <a class="card quick" href="/stati/transport/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-bus"/></svg></span><span class="grow"><b>Как добраться</b><span class="small muted">Автобус, машина, паром</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
         </div>
     </section>
 
@@ -50,12 +50,12 @@
         </div>
         <div class="row">
             @foreach ([
-                ['/stati/tropa', 'route-tropa.jpg', 'Тропа вдоль красного утёса над рекой', 'Тропа «Шаманка»', 'Виды с утёса, лесные тропы и берега Иркута.'],
-                ['/stati/LesChudes', 'route-les.jpg', 'Сосновый лес с валунами', 'Лес чудес и поляна', 'Лёгкая прогулка через лес к поляне у реки.'],
-                ['/stati/na_piknik', 'route-piknik.jpg', 'Пикник на берегу реки', 'На пикник', 'Места для спокойного отдыха на берегу и в лесу.'],
+                ['/stati/tropa/', 'route-tropa.jpg', 'Тропа вдоль красного утёса над рекой', 'Тропа «Шаманка»', 'Виды с утёса, лесные тропы и берега Иркута.'],
+                ['/stati/LesChudes/', 'route-les.jpg', 'Сосновый лес с валунами', 'Лес чудес и поляна', 'Лёгкая прогулка через лес к поляне у реки.'],
+                ['/stati/na_piknik/', 'route-piknik.jpg', 'Пикник на берегу реки', 'На пикник', 'Места для спокойного отдыха на берегу и в лесу.'],
             ] as [$href, $img, $alt, $title, $text])
                 <article class="card tile">
-                    <img src="{{ asset('img/'.$img) }}" alt="{{ $alt }}" loading="lazy">
+                    <img src="/img/{{ $img }}" alt="{{ $alt }}" loading="lazy">
                     <div class="card-body">
                         <h3>{{ $title }}</h3>
                         <p class="muted">{{ $text }}</p>
@@ -73,13 +73,13 @@
         </div>
         <div class="row">
             @foreach ([
-                [route('hotels'), 'service-homes.jpg', 'Деревянный домик в сосновом лесу', 'Жильё', 'Домики и гостевые дома'],
-                ['/uslugi/Bani', 'service-bani.jpg', 'Парная с печью и веником', 'Бани', 'Отдых после прогулки'],
-                ['/uslugi/reka/river', 'service-river.jpg', 'Лодка и удочка на реке на закате', 'Рыбалка и лодки', 'Прогулки по Иркуту'],
-                ['/uslugi/river_gulh', 'service-food.jpg', 'Корзина с хлебом, молоком и овощами', 'Деревенские продукты', 'Местное — с собой и домой'],
+                [route('hotels', absolute: false).'/', 'service-homes.jpg', 'Деревянный домик в сосновом лесу', 'Жильё', 'Домики и гостевые дома'],
+                ['/uslugi/Bani/', 'service-bani.jpg', 'Парная с печью и веником', 'Бани', 'Отдых после прогулки'],
+                ['/uslugi/reka/river/', 'service-river.jpg', 'Лодка и удочка на реке на закате', 'Рыбалка и лодки', 'Прогулки по Иркуту'],
+                ['/uslugi/river_gulh/', 'service-food.jpg', 'Корзина с хлебом, молоком и овощами', 'Деревенские продукты', 'Местное — с собой и домой'],
             ] as [$href, $img, $alt, $title, $text])
                 <a class="card tile tile--wide" style="flex-basis: 220px" href="{{ $href }}">
-                    <img src="{{ asset('img/'.$img) }}" alt="{{ $alt }}" loading="lazy">
+                    <img src="/img/{{ $img }}" alt="{{ $alt }}" loading="lazy">
                     <span class="card-body"><b style="font-size: 19px">{{ $title }}</b><span class="small muted">{{ $text }}</span></span>
                 </a>
             @endforeach
@@ -89,9 +89,9 @@
     <section id="gallery" class="section">
         <h2>Шаманка в деталях</h2>
         <div class="row gallery" style="gap: 12px">
-            <img src="{{ asset('img/gallery-1.jpg') }}" alt="Двое туристов на утёсе над Иркутом" loading="lazy">
-            <img src="{{ asset('img/gallery-2.jpg') }}" alt="Гостья в красном шарфе на фоне утёса зимой" loading="lazy">
-            <img src="{{ asset('img/gallery-3.jpg') }}" alt="Рябина у деревенского дома" loading="lazy">
+            <img src="/img/gallery-1.jpg" alt="Двое туристов на утёсе над Иркутом" loading="lazy">
+            <img src="/img/gallery-2.jpg" alt="Гостья в красном шарфе на фоне утёса зимой" loading="lazy">
+            <img src="/img/gallery-3.jpg" alt="Рябина у деревенского дома" loading="lazy">
         </div>
     </section>
 
