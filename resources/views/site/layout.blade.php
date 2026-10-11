@@ -39,6 +39,7 @@
         <div>Берегите природу. Уносите мусор с собой.</div>
     </footer>
 </div>
+<script src="/js/map.js?v={{ filemtime(public_path('js/map.js')) }}" defer></script>
 <script src="/js/site.js?v={{ filemtime(public_path('js/site.js')) }}" defer></script>
 </body>
 </html>

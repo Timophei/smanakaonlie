@@ -29,12 +29,9 @@
     <section id="map" class="stack">
         <div class="between">
             <h2 style="font-size: 30px; font-weight: 700">Шаманка как на ладони</h2>
-            <span class="small muted">Схема местности</span>
+            <a class="more" href="/karta/">Развернуть карту <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
-        <div class="card map">
-            <img src="/img/map.jpg" alt="Рисованная схема Шаманки: Шаманский утёс, река Шаманка, Иркут, паромная переправа и подвесной мост">
-            <div class="between"><span>Утёс · Реки · Мост · Паром</span></div>
-        </div>
+        @include('site.partials.map')
         <div class="row" style="gap: 14px">
             <a class="card quick" href="/stati/tropa/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-hike"/></svg></span><span class="grow"><b>Тропа «Шаманка»</b><span class="small muted">Прогулка к утёсу</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
             <a class="card quick" href="/stati/LesChudes/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-tree"/></svg></span><span class="grow"><b>Лес чудес</b><span class="small muted">Лес и поляна</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>

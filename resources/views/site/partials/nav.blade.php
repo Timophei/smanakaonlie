@@ -2,5 +2,5 @@
     <a href="/#routes">Маршруты</a>
     <a href="/stati/transport/">Как добраться</a>
     <a href="{{ route('hotels', absolute: false) }}/" @if(($active ?? '') === 'services') aria-current="page" @endif>Жильё и услуги</a>
-    <a class="btn-outline" href="/#map"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>Открыть карту</a>
+    <a class="btn-outline" href="/karta/"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg>Открыть карту</a>
 </nav>

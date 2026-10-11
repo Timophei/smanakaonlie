@@ -145,3 +145,29 @@ h3 { font-size: 22px; font-weight: 700; }
   .shots > img { height: 260px; }
   .shots-grid img { height: 130px; }
 }
+
+/* Интерактивная карта */
+.imap { background: var(--card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.imap-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.imap-canvas { position: relative; min-width: 720px; }
+.imap-canvas > img { width: 100%; height: 100%; }
+.imap-zones { position: absolute; inset: 0; width: 100%; height: 100%; }
+.imap-zone { fill: transparent; stroke: transparent; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; cursor: pointer; outline: none; transition: fill 0.15s, stroke 0.15s; }
+.imap-zone--line { fill: none; stroke-width: 26; }
+.imap-zone:hover, .imap-zone:focus-visible, .imap-zone.is-active { fill: rgba(255, 255, 255, 0.3); stroke: #fff; }
+.imap-zone--line:hover, .imap-zone--line:focus-visible, .imap-zone--line.is-active { fill: none; stroke: rgba(255, 255, 255, 0.65); }
+.imap-pin { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; padding: 0; border-radius: 50%; border: 3px solid #fff; background: var(--accent); box-shadow: 0 1px 4px rgba(20, 24, 31, 0.5); cursor: pointer; }
+.imap-pin::after { content: ''; position: absolute; inset: -12px; }
+.imap-pin:hover, .imap-pin.is-active { transform: scale(1.25); }
+.imap-pin--bath { background: #8a2f6b; }
+.imap-pin--food { background: var(--ok); }
+.imap-pin--river { background: var(--link); }
+.imap-tip { position: absolute; z-index: 2; width: max-content; max-width: min(260px, 70%); display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border-radius: 12px; background: #fff; color: var(--ink); font-size: 14px; box-shadow: 0 4px 16px rgba(20, 24, 31, 0.28); pointer-events: none; }
+.imap-tip[hidden] { display: none; }
+.imap-tip b { font-size: 16px; }
+.imap-tip .more { display: none; padding: 6px 0 2px; }
+.imap-tip.is-pinned { pointer-events: auto; }
+.imap-tip.is-pinned .more:not([hidden]) { display: inline-flex; }
+.imap-legend { display: flex; flex-wrap: wrap; gap: 6px 20px; padding: 10px 16px; color: var(--text); }
+.imap-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.imap-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); display: inline-block; }
