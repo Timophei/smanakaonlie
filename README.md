@@ -30,3 +30,14 @@ php artisan serve
 ```
 
 По умолчанию база — SQLite в `database/database.sqlite`. Для MySQL или PostgreSQL поменяйте `DB_*` в `.env`.
+
+## Установка на сервер
+
+На сервере от root:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Timophei/smanakaonlie/main/deploy/install.sh -o /root/shamanka-install.sh
+bash /root/shamanka-install.sh
+```
+
+Скрипт ставит сайт в `/var/www/shamanka` для домена `t.shamanka.online` и добавляет для него отдельный файл nginx. Повторный запуск обновляет сайт; `.env`, база и загруженные фото сохраняются. Тестовый домен закрыт от поисковиков. Для основного домена: `DOMAIN=shamanka.online bash /root/shamanka-install.sh`.
