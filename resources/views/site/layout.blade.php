@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Шаманка — отдых, маршруты и красивые места у Иркута')</title>
     <meta name="description" content="@yield('description', 'Путеводитель по Шаманке Иркутской области: тропа на утёс, Лес чудес, места для пикника, транспорт, жильё, бани и местные услуги.')">
+    <link rel="icon" type="image/png" href="{{ $theme?->iconUrl() ?? '/img/logos/autumn-icon.png' }}">
     <link rel="canonical" href="{{ config('app.canonical_root') }}{{ request()->path() === '/' ? '/' : '/'.request()->path().'/' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,8 +23,7 @@
             @yield('brand')
         @else
             <a class="brand" href="/">
-                <img src="/img/logo.jpg" alt="" width="48" height="48">
-                Открой Шаманку
+                <img class="brand-logo" src="{{ $theme?->logoUrl() ?? '/img/logos/autumn-logo.png' }}" alt="Открой Шаманку" width="864" height="170">
             </a>
         @endif
         @include('site.partials.nav')

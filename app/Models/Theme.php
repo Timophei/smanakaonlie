@@ -116,6 +116,21 @@ class Theme extends Model
 
     public function mapUrl(): ?string
     {
-        return $this->map_image ? '/storage/'.ltrim($this->map_image, '/') : null;
+        return $this->storageUrl($this->map_image);
+    }
+
+    public function logoUrl(): ?string
+    {
+        return $this->storageUrl($this->logo_image);
+    }
+
+    public function iconUrl(): ?string
+    {
+        return $this->storageUrl($this->icon_image);
+    }
+
+    private function storageUrl(?string $path): ?string
+    {
+        return $path ? '/storage/'.ltrim($path, '/') : null;
     }
 }

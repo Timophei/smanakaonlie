@@ -21,8 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer(['site.layout', 'site.partials.map'], function (\Illuminate\View\View $view): void {
-            $view->with('theme', once(fn () => app(ThemeResolver::class)->resolve(request()->query('tema'))));
+        View::composer(['site.layout', 'site.home', 'site.partials.map'], function (\Illuminate\View\View $view): void {
+            $request = request();
+            if (! $request->attributes->has('theme')) {
+                $request->attributes->set('theme', app(ThemeResolver::class)->resolve($request->query('tema')));
+            }
+            $view->with('theme', $request->attributes->get('theme'));
         });
     }
 }

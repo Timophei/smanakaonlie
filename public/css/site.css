@@ -57,10 +57,9 @@ h3 { font-size: 22px; font-weight: 700; }
 .header, .footer { max-width: 1180px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
 .footer { padding: 24px 20px; font-size: 14px; }
 .brand { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
-.brand img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
-.brand--big { font-size: clamp(30px, 5vw, 44px); line-height: 1; }
-.brand--big img { width: 72px; height: 72px; border-radius: 14px; }
-.brand small { display: block; font-size: 18px; font-weight: 400; letter-spacing: 0; margin-top: 6px; opacity: 0.9; }
+.brand-logo { height: 44px; width: auto; }
+.brand--big .brand-logo { height: clamp(48px, 9vw, 72px); }
+.brand small { display: block; font-size: 17px; font-weight: 400; letter-spacing: 0; margin-top: 8px; opacity: 0.9; }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; font-size: 15px; font-weight: 600; }
 .nav a { padding: 12px 0; }
 .nav a[aria-current] { border-bottom: 2px solid currentColor; }
