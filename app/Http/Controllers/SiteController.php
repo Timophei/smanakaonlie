@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\CatalogPage;
 use App\Models\ContactClick;
 use App\Models\OwnerContact;
+use App\Models\Photo;
 use App\Models\Place;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,13 @@ class SiteController extends Controller
 {
     public function home(): View
     {
-        return view('site.home', ['seo' => CatalogPage::firstWhere('category', 'home')]);
+        return view('site.home', [
+            'seo' => CatalogPage::firstWhere('category', 'home'),
+            // Предложения для карусели «Останьтесь чуть дольше»: сначала рекомендуемые, остальные вперемешку
+            'offers' => Place::where('status', 'published')->whereNotNull('cover')
+                ->orderByDesc('is_featured')->inRandomOrder()->limit(8)->get(),
+            'photos' => Photo::where('is_published', true)->inRandomOrder()->limit(24)->get(),
+        ]);
     }
 
     /** Список жилья: /uslugi/homes */

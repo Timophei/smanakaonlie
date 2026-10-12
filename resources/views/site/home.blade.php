@@ -62,34 +62,67 @@
             <h2>Останьтесь чуть дольше</h2>
             <p class="lead">Жильё, бани и местные предложения для отдыха в Шаманке.</p>
         </div>
-        <div class="row">
+        <div class="row quick-list">
             @foreach ([
-                [route('hotels', absolute: false).'/', 'service-homes.jpg', 'Деревянный домик в сосновом лесу', 'Жильё', 'Домики и гостевые дома'],
-                ['/uslugi/Bani/', 'service-bani.jpg', 'Парная с печью и веником', 'Бани', 'Отдых после прогулки'],
-                ['/uslugi/reka/river/', 'service-river.jpg', 'Лодка и удочка на реке на закате', 'Рыбалка и лодки', 'Прогулки по Иркуту'],
-                ['/uslugi/river_gulh/', 'service-food.jpg', 'Корзина с хлебом, молоком и овощами', 'Деревенские продукты', 'Местное — с собой и домой'],
-            ] as [$href, $img, $alt, $title, $text])
-                <a class="card tile tile--wide" style="flex-basis: 220px" href="{{ $href }}">
-                    <img src="/img/{{ $img }}" alt="{{ $alt }}" loading="lazy">
-                    <span class="card-body"><b style="font-size: 19px">{{ $title }}</b><span class="small muted">{{ $text }}</span></span>
-                </a>
+                ['hotel', 'i-house', 'Гостиницы', 'Где остановиться'],
+                ['bath', 'i-bath', 'Бани', 'Пар и отдых'],
+                ['food', 'i-basket', 'Продукты', 'Деревенские вкусности'],
+                ['river', 'i-boat', 'Рыбалка и река', 'Лодки, сплавы, рыбалка'],
+            ] as [$category, $icon, $title, $text])
+                <a class="card quick" href="{{ \App\Models\CatalogPage::forCategory($category)->url() }}"><span class="round"><svg class="icon" aria-hidden="true"><use href="#{{ $icon }}"/></svg></span><span class="grow"><b>{{ $title }}</b><span class="small muted">{{ $text }}</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
             @endforeach
         </div>
+        @if ($offers->isNotEmpty())
+            <div class="carousel carousel--always carousel--tiles" data-carousel>
+                <button type="button" class="carousel-btn carousel-btn--prev" data-carousel-prev aria-label="Предыдущее предложение"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button>
+                <div class="row carousel-track" data-carousel-track>
+                    @foreach ($offers as $offer)
+                        <article class="card tile">
+                            <img src="/storage/{{ $offer->cover }}" alt="{{ $offer->title }}" loading="lazy">
+                            <div class="card-body">
+                                <span class="small muted">{{ \App\Models\Place::CATEGORIES[$offer->category] ?? '' }}</span>
+                                <h3>{{ $offer->title }}</h3>
+                                @if ($offer->short_description)<p class="muted">{{ \Illuminate\Support\Str::limit($offer->short_description, 110) }}</p>@endif
+                                <a class="more" href="/{{ $offer->path }}/">Подробнее <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+                <button type="button" class="carousel-btn carousel-btn--next" data-carousel-next aria-label="Следующее предложение"><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></button>
+            </div>
+        @endif
     </section>
 
-    <section id="gallery" class="section">
-        <h2>Шаманка в деталях</h2>
-        <div class="row gallery" style="gap: 12px">
-            <img src="/img/gallery-1.jpg" alt="Двое туристов на утёсе над Иркутом" loading="lazy">
-            <img src="/img/gallery-2.jpg" alt="Гостья в красном шарфе на фоне утёса зимой" loading="lazy">
-            <img src="/img/gallery-3.jpg" alt="Рябина у деревенского дома" loading="lazy">
-        </div>
-    </section>
+    @if ($photos->isNotEmpty())
+        <section id="photos" class="section">
+            <div>
+                <h2>Шаманка в фото</h2>
+                <p class="lead">Снимки гостей и местных жителей. Пришлите свои — опубликуем с подписью и ссылкой на вас.</p>
+            </div>
+            <div class="carousel carousel--always" data-carousel>
+                <button type="button" class="carousel-btn carousel-btn--prev" data-carousel-prev aria-label="Предыдущее фото"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button>
+                <div class="row carousel-track" data-carousel-track>
+                    @foreach ($photos as $photo)
+                        <figure class="photo-slide">
+                            <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy">
+                            @if ($photo->authorLabel())
+                                <figcaption class="photo-credit">Фото:
+                                    @if ($photo->author_url)<a href="{{ $photo->author_url }}" target="_blank" rel="nofollow noopener">{{ $photo->authorLabel() }}</a>@else{{ $photo->authorLabel() }}@endif
+                                </figcaption>
+                            @endif
+                        </figure>
+                    @endforeach
+                </div>
+                <button type="button" class="carousel-btn carousel-btn--next" data-carousel-next aria-label="Следующее фото"><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></button>
+            </div>
+            <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@graph' => $photos->map->structuredData()->values()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+        </section>
+    @endif
 
     <section id="contact" class="contact">
         <div class="stack">
             <h2 style="font-size: 34px">Есть что добавить?</h2>
-            <p>Расскажите о своём месте, предложите маршрут или добавьте услуги в каталог.</p>
+            <p>Расскажите о своём месте, предложите маршрут, пришлите фото или добавьте услуги в каталог.</p>
             <a class="more mail" href="mailto:main@shamanka.online"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>main@shamanka.online</a>
         </div>
     </section>
