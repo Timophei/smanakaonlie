@@ -38,6 +38,7 @@
     @if ($theme)
         <style>:root { {{ $theme->cssVariables() }} }</style>
     @endif
+    @include('site.partials.metrika')
 </head>
 <body data-theme="{{ $theme?->slug }}">
 @include('site.partials.icons')
