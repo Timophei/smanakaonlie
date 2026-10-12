@@ -16,6 +16,9 @@ window.mapZonesEditor = function (config) {
     href: zone.href || null,
     shape: zone.shape,
     points: zone.points.map((point) => point.join(',')).join(' '),
+    featured: zone.featured,
+    color: zone.color,
+    dashed: zone.dashed,
   });
 
   const escape = (text) => String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -47,6 +50,9 @@ window.mapZonesEditor = function (config) {
         href: zone.href || '',
         shape: zone.shape === 'line' ? 'line' : 'polygon',
         points: parse(zone.points),
+        featured: Boolean(zone.featured),
+        color: zone.color || '#e11d48',
+        dashed: Boolean(zone.dashed),
       }));
       if (this.selected !== null && this.selected >= this.zones.length) this.selected = null;
       this.draw();
@@ -73,7 +79,7 @@ window.mapZonesEditor = function (config) {
     },
 
     addZone() {
-      this.zones.push({ title: 'Новая зона', text: '', href: '', shape: 'polygon', points: [] });
+      this.zones.push({ title: 'Новая зона', text: '', href: '', shape: 'polygon', points: [], featured: false, color: '#e11d48', dashed: false });
       this.selected = this.zones.length - 1;
       this.save();
     },

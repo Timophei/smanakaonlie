@@ -166,7 +166,7 @@ h3 { font-size: 22px; font-weight: 700; }
 .imap-zone { fill: transparent; stroke: transparent; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; cursor: pointer; outline: none; transition: fill 0.15s, stroke 0.15s; }
 .imap-zone--line { fill: none; stroke-width: 30; }
 .imap-zone:hover, .imap-zone:focus-visible, .imap-zone.is-active { fill: rgba(255, 255, 255, 0.3); stroke: #fff; }
-.imap-zone--line:hover, .imap-zone--line:focus-visible, .imap-zone--line.is-active { fill: none; stroke: rgba(255, 255, 255, 0.65); }
+.imap-zone--line:hover, .imap-zone--line:focus-visible, .imap-zone--line.is-active { fill: none; stroke: rgba(255, 255, 255, 0.3); }
 .imap-pin { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; padding: 0; border-radius: 50%; border: 3px solid #fff; background: var(--t-primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); cursor: pointer; }
 .imap-pin::after { content: ''; position: absolute; inset: -12px; }
 .imap-pin:hover, .imap-pin.is-active { transform: scale(1.25); }
@@ -389,3 +389,24 @@ h3 { font-size: 22px; font-weight: 700; }
 .imap-locate { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 14px; }
 .imap-locate.is-on { background: #1a73e8; border-color: #1a73e8; color: #fff; }
 .imap-geo-status { flex-basis: 100%; }
+
+/* Подсвеченные зоны (тропа, паром, мост) и легенда к ним */
+.imap-featured { pointer-events: none; }
+.imap-hl, .imap-hl-halo { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.imap-hl-halo { stroke: rgba(30, 20, 10, 0.55); stroke-width: 14; }
+.imap-hl { stroke: var(--zone-color); stroke-width: 7; }
+.imap-hl.is-dashed { stroke-dasharray: 18 14; }
+.imap-hl--polygon.imap-hl { fill: color-mix(in srgb, var(--zone-color) 22%, transparent); stroke-width: 5; }
+.imap-hl-halo.imap-hl--polygon { stroke-width: 10; }
+@media (prefers-reduced-motion: no-preference) {
+  .imap-hl.is-dashed { animation: imap-march 1.6s linear infinite; }
+}
+@keyframes imap-march { to { stroke-dashoffset: -32; } }
+.imap-key { position: relative; z-index: 4; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px 0; background: var(--t-surface); }
+.imap-key-item { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--t-border); border-radius: 999px; background: var(--t-bg, #fff); color: var(--t-heading); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.imap-key-item:hover, .imap-key-item.is-active { border-color: var(--zone-color); box-shadow: 0 0 0 2px color-mix(in srgb, var(--zone-color) 35%, transparent); }
+.imap-key-item svg { width: 28px; height: 12px; flex: none; }
+.imap-key-halo { stroke: rgba(30, 20, 10, 0.55); stroke-width: 6; stroke-linecap: round; }
+.imap-key-line { stroke: var(--zone-color); stroke-width: 3.5; stroke-linecap: round; }
+.imap-key-line.is-dashed { stroke-dasharray: 5 4; }
+.imap-key-area { fill: color-mix(in srgb, var(--zone-color) 35%, transparent); stroke: var(--zone-color); stroke-width: 2; }

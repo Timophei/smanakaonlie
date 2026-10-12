@@ -18,7 +18,7 @@ class MapEditorTest extends TestCase
 
     public function test_zones_moved_from_config_to_database(): void
     {
-        $this->assertSame(count(config('map.zones')), MapZone::count());
+        $this->assertSame(count(config('map.zones')) + 1, MapZone::count()); // + тропа «33 богатыря»
         $this->assertSame(config('map.zones')[0]['points'], MapZone::forMap()[0]['points']);
     }
 
@@ -92,5 +92,20 @@ class MapEditorTest extends TestCase
             ->assertSee('Где я?')
             ->assertSee('data-title="Дом по координатам"', false)
             ->assertDontSee('data-title="Дом в Иркутске"', false);
+    }
+
+    public function test_featured_zones_are_highlighted_and_listed_in_legend(): void
+    {
+        Theme::query()->update(['map_zones' => null]);
+        MapZone::replaceAll(MapZone::sanitize([
+            ['title' => 'Тропа «33 богатыря»', 'href' => '/stati/tropa/', 'shape' => 'line', 'points' => '0,0 100,100', 'featured' => true, 'color' => '#E11D48', 'dashed' => true],
+            ['title' => 'Обычная зона', 'shape' => 'polygon', 'points' => '0,0 10,0 10,10'],
+        ]));
+
+        $this->get('/')->assertOk()
+            ->assertSee('class="imap-hl imap-hl--line  is-dashed "', false)
+            ->assertSee('--zone-color: #e11d48', false)
+            ->assertSee('data-zone-show="z0"', false)
+            ->assertDontSee('data-zone-show="z1"', false);
     }
 }
