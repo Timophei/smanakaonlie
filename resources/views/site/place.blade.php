@@ -31,7 +31,7 @@
     <div class="stack">
         <h1>{{ $place->title }}</h1>
         <div class="chips" style="align-items: center; gap: 8px 12px">
-            @if ($place->address)<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="icon" style="color: var(--accent)" aria-hidden="true"><use href="#i-pin"/></svg>{{ $place->address }}</span>@endif
+            @if ($place->address)<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="icon" style="color: var(--t-icon)" aria-hidden="true"><use href="#i-pin"/></svg>{{ $place->address }}</span>@endif
             @if ($place->status !== 'published')<span class="chip chip--draft">Черновик — видите только вы</span>@endif
             @unless ($place->is_open)<span class="chip chip--draft">Сейчас не принимает гостей</span>@endunless
             @foreach ($place->tags as $tag)<span class="chip">{{ $tag->name }}</span>@endforeach

@@ -1,6 +1,8 @@
 {{-- Интерактивная карта: картинка, поверх неё контуры зон и точки объектов. Логика — в public/js/map.js --}}
 @php
     $map = config('map');
+    $map['image'] = $theme?->mapUrl() ?? $map['image'];
+    $map['zones'] = $theme?->map_zones ?: $map['zones'];
     $markers = \App\Models\Place::query()
         ->when(! auth()->check(), fn ($query) => $query->where('status', 'published'))
         ->where('status', '!=', 'hidden')
