@@ -102,13 +102,6 @@
                             <option value="polygon">Область (утёс, посёлок, река)</option>
                             <option value="line">Линия (паром, мост, речка)</option>
                         </select></label>
-                    <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" x-model="zone.featured" x-on:change="save()">
-                        <span>Всегда подсвечивать и показывать в легенде под картой</span></label>
-                    <div class="mze-buttons" x-show="zone.featured" style="align-items: center">
-                        <label style="display: flex; gap: 6px; align-items: center"><span>Цвет</span>
-                            <input type="color" x-model="zone.color" x-on:input="save()" style="width: 40px; height: 28px; padding: 0; border: 0; background: none"></label>
-                        <label style="display: flex; gap: 6px; align-items: center"><input type="checkbox" x-model="zone.dashed" x-on:change="save()"><span>Пунктир</span></label>
-                    </div>
                     <div class="mze-hint" x-text="`Точек: ${zone.points.length}` + (zone.points.length < (zone.shape === 'line' ? 2 : 3) ? ' — нужно ещё, иначе зона не сохранится' : '')"></div>
                     <div class="mze-buttons">
                         <button type="button" class="mze-btn mze-btn--primary" x-on:click="done()">Готово</button>

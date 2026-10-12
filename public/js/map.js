@@ -56,7 +56,6 @@ document.querySelectorAll('[data-map]').forEach((map) => {
     tip.hidden = true;
     tip.classList.remove('is-pinned');
     targets.forEach((target) => target.classList.remove('is-active'));
-    map.querySelectorAll('[data-zone-show]').forEach((item) => item.classList.remove('is-active'));
     pinned = null;
   };
 
@@ -90,24 +89,6 @@ document.querySelectorAll('[data-map]').forEach((map) => {
         event.preventDefault();
         pinned === target ? hide() : pin(target, centerOf(target));
       }
-    });
-  });
-
-  // Легенда подсвеченных зон: показывает место на карте и подсказку
-  map.querySelectorAll('[data-zone-show]').forEach((button) => {
-    button.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const zone = map.querySelector(`[data-zone-id="${button.dataset.zoneShow}"]`);
-      if (!zone) return;
-      if (map.classList.contains('is-collapsed') && expandButton) setCollapsed(false);
-      const zoneBox = zone.getBoundingClientRect();
-      const canvasBox = canvas.getBoundingClientRect();
-      scroller.scrollTo({ left: zoneBox.left - canvasBox.left + zoneBox.width / 2 - scroller.clientWidth / 2 });
-      map.querySelectorAll('[data-zone-show]').forEach((item) => item.classList.toggle('is-active', item === button));
-      requestAnimationFrame(() => {
-        pin(zone, centerOf(zone));
-        canvas.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      });
     });
   });
 
