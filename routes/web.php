@@ -13,6 +13,6 @@ Route::middleware('throttle:30,1')->group(function () {
 
 // Страницы объектов живут по своим адресам из админки (старые адреса сайта сохраняются).
 // Маршрут стоит последним, чтобы не перехватывать остальные.
-Route::get('/{path}', [SiteController::class, 'place'])
+Route::get('/{path}', [SiteController::class, 'page'])
     ->where('path', '^(?!admin|livewire|storage|up$)[A-Za-z0-9_\-\/]+$')
     ->name('place');

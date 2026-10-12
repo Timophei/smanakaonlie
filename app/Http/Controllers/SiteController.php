@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\ContactClick;
 use App\Models\OwnerContact;
 use App\Models\Place;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class SiteController extends Controller
@@ -37,15 +39,42 @@ class SiteController extends Controller
         return view('site.hotels', compact('places', 'tags', 'tag'));
     }
 
-    /** Страница объекта по его адресу, например /uslugi/gostinitsy/domikivSham */
-    public function place(string $path): View
+    /**
+     * Страница по адресу из админки: сначала ищется статья, затем объект каталога.
+     * Так старые адреса сайта (/stati/…, /uslugi/…) открываются как раньше.
+     */
+    public function page(string $path): View
     {
+        $path = trim($path, '/');
+
+        $article = $this->visible(Article::query())->where('path', $path)->with('tags')->first();
+        if ($article) {
+            return view('site.article', ['article' => $article, 'related' => $this->relatedPlaces($article)]);
+        }
+
         $place = $this->visible(Place::query())
-            ->where('path', trim($path, '/'))
+            ->where('path', $path)
             ->with(['amenities', 'variants', 'owner.contacts', 'tags'])
             ->firstOrFail();
 
         return view('site.place', compact('place'));
+    }
+
+    /**
+     * Объекты с теми же метками, что у статьи: для блока «Рядом» в конце.
+     *
+     * @return Collection<int, Place>
+     */
+    private function relatedPlaces(Article $article): Collection
+    {
+        $tagIds = $article->tags->modelKeys();
+        if (! $tagIds) {
+            return collect();
+        }
+
+        return Place::where('status', 'published')
+            ->whereHas('tags', fn (Builder $query) => $query->whereKey($tagIds))
+            ->orderByDesc('is_featured')->orderBy('sort')->limit(3)->get();
     }
 
     /** «Показать телефон»: считаем нажатие и отдаём номер */
