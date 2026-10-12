@@ -85,7 +85,19 @@ if [ "$SKIP_NGINX" != 1 ]; then
     [ -S "$PHP_SOCK" ] || die "не найден сокет PHP-FPM $PHP_SOCK. Посмотрите ls /run/php/ и укажите: PHP_SOCK=/run/php/... bash install.sh"
     conf="/etc/nginx/sites-available/$DOMAIN"
     if [ -f "$conf" ]; then
-        echo "Файл $conf уже есть — не трогаю (там может быть настроен HTTPS)."
+        echo "Файл $conf уже есть — остальное в нём не трогаю (там может быть настроен HTTPS)."
+        # Поднимаем лимиты загрузки до значений из текущей версии (видео в статьях до 60 МБ)
+        if grep -q 'upload_max_filesize=16M' "$conf" || grep -q 'client_max_body_size 64m' "$conf"; then
+            cp "$conf" "$conf.bak"
+            sed -i -e 's/upload_max_filesize=16M \\n post_max_size=64M/upload_max_filesize=64M \\n post_max_size=80M/' \
+                   -e 's/client_max_body_size 64m;/client_max_body_size 80m;/' "$conf"
+            if nginx -t 2>/dev/null; then
+                systemctl reload nginx && echo "Лимит загрузки поднят до 60 МБ."
+            else
+                mv "$conf.bak" "$conf"
+                echo "Не удалось поднять лимит загрузки — настройка возвращена как была."
+            fi
+        fi
     else
         noindex_line=""
         [ "$NOINDEX" = 1 ] && noindex_line='add_header X-Robots-Tag "noindex, nofollow" always;'

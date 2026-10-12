@@ -9,8 +9,8 @@ server {
     index index.php;
     charset utf-8;
 
-    # Фото объектов загружаются через админку пачками
-    client_max_body_size 64m;
+    # Фото и видео загружаются через админку (видео до 60 МБ)
+    client_max_body_size 80m;
 
     __NOINDEX__
 
@@ -25,7 +25,7 @@ server {
         include fastcgi_params;
         fastcgi_pass unix:__PHP_SOCK__;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        fastcgi_param PHP_VALUE "upload_max_filesize=16M \n post_max_size=64M";
+        fastcgi_param PHP_VALUE "upload_max_filesize=64M \n post_max_size=80M";
         fastcgi_hide_header X-Powered-By;
     }
 

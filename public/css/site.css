@@ -249,3 +249,72 @@ h3 { font-size: 22px; font-weight: 700; }
   .carousel-btn--next { right: -6px; }
   .carousel-btn:disabled { opacity: 0; pointer-events: none; }
 }
+
+/* Статья: колонка текста 720px, фото и видео бывают шире текста или во всю ширину */
+.article { --col: 720px; --wide: 980px; display: flex; flex-direction: column; gap: 20px; }
+.article .crumbs, .article-head, .article .b { width: 100%; max-width: var(--col); margin-inline: auto; }
+.article .b--wide { max-width: var(--wide); }
+.article .b--full { max-width: none; }
+.article-head { display: flex; flex-direction: column; gap: 12px; }
+.article-head h1 { font-size: clamp(32px, 5vw, 48px); }
+.article-facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 0; }
+.article-facts div { background: var(--t-surface); border: 1px solid var(--t-border); border-radius: 12px; padding: 8px 14px; }
+.article-facts dt { font-size: 13px; color: var(--t-text-muted); }
+.article-facts dd { margin: 0; font-weight: 700; color: var(--t-heading); }
+.article figure { margin: 0; }
+.article figure img, .article video { width: 100%; height: auto; border-radius: var(--radius); }
+.article-cover img { aspect-ratio: 16 / 9; object-fit: cover; }
+.article figcaption { font-size: 14px; color: var(--t-text-muted); margin-top: 8px; }
+.article-body { display: block; }
+.article-body > .b { margin-bottom: 24px; }
+.article-body > .b:not(.b--text):not(.b--float-left):not(.b--float-right) { clear: both; }
+.article-body .prose { font-size: 18px; line-height: 1.65; }
+.article-body .prose h2 { font-size: 28px; margin: 1.2em 0 0.4em; }
+.article-body .prose h3 { font-size: 22px; margin: 1em 0 0.3em; }
+.article-body .prose ul, .article-body .prose ol { padding-left: 1.3em; }
+.article-body .prose blockquote { margin: 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--t-primary); color: var(--t-text-muted); }
+/* Обтекание: фото уходит в край колонки текста, следующий текст обтекает его */
+.article-body > .b--float-left, .article-body > .b--float-right { width: min(45%, 330px); }
+.article-body > .b--float-left { float: left; margin: 6px 24px 16px calc((100% - min(100%, var(--col))) / 2); }
+.article-body > .b--float-right { float: right; margin: 6px calc((100% - min(100%, var(--col))) / 2) 16px 24px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.gallery-grid img { aspect-ratio: 4 / 3; object-fit: cover; }
+.video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.callout { background: var(--t-warning-bg); color: var(--t-warning-text); border-radius: var(--radius); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+.callout .prose { font-size: 17px; color: inherit; }
+.callout--warning { border-left: 4px solid var(--t-primary); }
+.callout--info { background: var(--t-surface); color: var(--t-text); border: 1px solid var(--t-border); }
+.steps h2 { font-size: 28px; margin-bottom: 12px; }
+.steps-list { list-style: none; counter-reset: step; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+.steps-list li { counter-increment: step; position: relative; padding-left: 52px; display: flex; flex-direction: column; gap: 8px; }
+.steps-list li::before { content: counter(step); position: absolute; left: 0; top: -2px; width: 36px; height: 36px; border-radius: 50%; background: var(--t-primary); color: var(--t-on-primary); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.steps-list li:not(:last-child)::after { content: ''; position: absolute; left: 17px; top: 38px; bottom: -16px; width: 2px; background: var(--t-border); }
+.steps-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 19px; color: var(--t-heading); }
+.steps-list p { font-size: 17px; }
+.steps-list img { border-radius: 12px; }
+.places-block h2, .article-related h2 { font-size: 28px; margin-bottom: 12px; }
+.place-card { flex: 1 1 220px; }
+.place-card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+
+/* Карусель, которая листается на любом экране (галерея в статье) */
+.carousel--always .carousel-track { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; gap: 10px; }
+.carousel--always .carousel-track::-webkit-scrollbar { display: none; }
+.carousel--always .carousel-track > img { flex: 0 0 auto; width: min(80%, 640px); aspect-ratio: 3 / 2; object-fit: cover; scroll-snap-align: center; }
+.carousel--always .carousel-btn { display: flex; align-items: center; justify-content: center; position: absolute; z-index: 2; top: calc(50% - 20px); width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--t-surface); color: var(--t-heading); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); cursor: pointer; }
+.carousel--always .carousel-btn--prev { left: 8px; }
+.carousel--always .carousel-btn--next { right: 8px; }
+.carousel--always .carousel-btn:disabled { opacity: 0; pointer-events: none; }
+
+@media (max-width: 720px) {
+  .article { gap: 16px; }
+  .article-body .prose { font-size: 17px; }
+  /* На телефоне без обтекания; «во всю ширину» — от края до края экрана */
+  .article-body > .b--float-left, .article-body > .b--float-right { float: none; width: 100%; margin: 0 0 24px; }
+  .article .b--full { width: auto; margin-inline: -16px; }
+  .article .b--full img, .article .b--full video, .article .b--full .video-frame { border-radius: 0; }
+  .article .b--full figcaption { padding-inline: 16px; }
+  .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .carousel--always .carousel-track > img { width: 86%; }
+  .steps-list li { padding-left: 46px; }
+}
