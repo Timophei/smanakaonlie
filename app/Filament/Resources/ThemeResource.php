@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ThemeResource\Pages;
+use App\Models\MapZone;
 use App\Models\Theme;
 use App\Support\ThemeResolver;
 use Filament\Forms;
@@ -75,11 +76,17 @@ class ThemeResource extends Resource
                     Forms\Components\FileUpload::make('map_image')->label('Подложка карты')->image()
                         ->disk('public')->directory('themes')->maxSize(12288)
                         ->helperText('Лучше тот же рисунок, перекрашенный под сезон: контуры зон привязаны к расположению утёса, рек, парома и моста.'),
-                    Forms\Components\Textarea::make('map_zones')->label('Свои контуры зон (для продвинутых)')->rows(8)
-                        ->helperText('Пусто — используются общие контуры. Формат как в config/map.php, в JSON.')
-                        ->formatStateUsing(fn (mixed $state): ?string => $state ? json_encode($state, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : null)
-                        ->dehydrateStateUsing(fn (?string $state): ?array => filled($state) ? json_decode($state, true) : null)
-                        ->rule('nullable')->rule('json'),
+                    Forms\Components\ViewField::make('map_zones')->label('Зоны на карте этой темы')
+                        ->view('filament.forms.map-zones-editor')
+                        ->viewData(fn (?Theme $record): array => [
+                            'image' => $record?->mapUrl() ?? config('map.image'),
+                            'width' => config('map.width'),
+                            'height' => config('map.height'),
+                            'nullable' => true,
+                            'defaults' => MapZone::forMap(),
+                        ])
+                        ->dehydrateStateUsing(fn (?array $state): ?array => MapZone::sanitize($state) ?: null)
+                        ->helperText('Обычно не нужно: общие зоны правятся в «Оформление → Карта». Свои — только если у темы другой рисунок.'),
                 ]),
 
                 Forms\Components\Tabs\Tab::make('Вечер')->columns(3)->schema([
