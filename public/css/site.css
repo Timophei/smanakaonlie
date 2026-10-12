@@ -318,3 +318,16 @@ h3 { font-size: 22px; font-weight: 700; }
   .carousel--always .carousel-track > img { width: 86%; }
   .steps-list li { padding-left: 46px; }
 }
+
+/* Карусель предложений на главной и «Шаманка в фото» */
+.carousel--tiles .carousel-track > .tile { flex: 0 0 280px; scroll-snap-align: start; }
+.carousel--tiles .carousel-btn { top: 25%; }
+.photo-slide { position: relative; flex: 0 0 auto; margin: 0; scroll-snap-align: center; }
+.photo-slide img { display: block; height: 340px; width: auto; max-width: 86vw; object-fit: cover; border-radius: 12px; background: var(--t-border); }
+.photo-credit { position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 13px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.photo-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 720px) {
+  .carousel--tiles .carousel-track > .tile { flex: 0 0 86%; scroll-snap-align: center; }
+  .carousel--always .carousel-track > .photo-slide { flex: 0 0 auto; }
+  .photo-slide img { height: 280px; }
+}
