@@ -99,7 +99,7 @@
                 <h2>Шаманка в фото</h2>
                 <p class="lead">Снимки гостей и местных жителей. Пришлите свои — опубликуем с подписью и ссылкой на вас.</p>
             </div>
-            <div class="carousel carousel--always" data-carousel>
+            <div class="carousel carousel--always" data-carousel data-lightbox>
                 <button type="button" class="carousel-btn carousel-btn--prev" data-carousel-prev aria-label="Предыдущее фото"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button>
                 <div class="row carousel-track" data-carousel-track>
                     @foreach ($photos as $photo)

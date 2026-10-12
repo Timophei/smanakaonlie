@@ -71,4 +71,11 @@ class SitePagesTest extends TestCase
 
         $this->assertSame(1, ContactClick::where('kind', 'telegram')->count());
     }
+
+    public function test_old_duplicate_address_redirects_permanently(): void
+    {
+        $this->get('/uslugi/gostinitsy/pervyyotel_xdwf_zcxe_sirf_ctor/')
+            ->assertStatus(301)
+            ->assertRedirect('/uslugi/gostinitsy/domikivSham/');
+    }
 }

@@ -23,6 +23,7 @@ class PhotosTest extends TestCase
 
         $this->get('/')->assertOk()
             ->assertSee('Шаманка в фото')
+            ->assertSee('data-lightbox', false)
             ->assertSee('alt="Утёс в тумане"', false)
             ->assertSee('href="https://instagram.com/baikal_shots" target="_blank" rel="nofollow noopener">@baikal_shots</a>', false)
             ->assertSee('"@type":"ImageObject"', false)
