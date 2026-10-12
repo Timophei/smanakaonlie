@@ -200,7 +200,6 @@ h3 { font-size: 22px; font-weight: 700; }
 .nav-toggle { display: none; }
 .carousel { position: relative; }
 .carousel-btn { display: none; }
-.map-title { font-size: 30px; }
 .notice-icon { font-size: 30px; }
 .only-mobile { display: none; }
 
@@ -331,3 +330,41 @@ h3 { font-size: 22px; font-weight: 700; }
   .carousel--always .carousel-track > .photo-slide { flex: 0 0 auto; }
   .photo-slide img { height: 280px; }
 }
+
+/* Первый экран на компьютере: карта выше, плашка ООПТ компактнее */
+@media (min-width: 721px) {
+  .imap.is-collapsed .imap-scroll { max-height: clamp(220px, 40vh, 440px); }
+  .imap.is-collapsed .imap-canvas { margin-top: -14%; }
+  .notice { padding: 8px 14px; gap: 8px 14px; }
+  .notice .btn { padding: 10px 16px; }
+  .notice-icon { font-size: 24px; }
+}
+
+/* Промо-блок в каталоге на телефоне: картинка во всю ширину сверху */
+@media (max-width: 720px) {
+  .promo { flex-direction: column; align-items: stretch; gap: 0; }
+  .promo img { flex: none; width: 100%; height: 150px; }
+  .promo > span { flex: none; padding: 14px 20px 4px; }
+  .promo .more { padding: 8px 20px 16px; }
+}
+
+/* Просмотр фото на весь экран */
+.photo-slide img { cursor: zoom-in; }
+.lightbox:focus { outline: none; }
+.lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0c0a08; color: #fff; overflow: hidden; }
+.lightbox-btn:focus:not(:focus-visible) { outline: none; }
+.lightbox::backdrop { background: rgba(0, 0, 0, 0.6); }
+.lightbox-track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior: contain; }
+.lightbox-track::-webkit-scrollbar { display: none; }
+.lightbox-slide { flex: 0 0 100%; height: 100%; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 56px 16px 20px; scroll-snap-align: center; scroll-snap-stop: always; }
+.lightbox-slide img { max-width: 100%; max-height: calc(100% - 64px); object-fit: contain; border-radius: 8px; }
+.lightbox-slide figcaption { max-width: 720px; text-align: center; font-size: 15px; line-height: 1.45; opacity: 0.9; }
+.lightbox-slide figcaption a { color: inherit; }
+.lightbox-btn { position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 20px; cursor: pointer; }
+.lightbox-btn:hover { background: rgba(255, 255, 255, 0.26); }
+.lightbox-close { top: 10px; right: 10px; }
+.lightbox-prev { left: 12px; top: calc(50% - 22px); }
+.lightbox-next { right: 12px; top: calc(50% - 22px); }
+.lightbox-btn:disabled { opacity: 0; pointer-events: none; }
+.lightbox-count { position: absolute; top: 20px; left: 20px; font-size: 14px; opacity: 0.7; }
+@media (max-width: 720px) { .lightbox-prev, .lightbox-next { display: none; } }

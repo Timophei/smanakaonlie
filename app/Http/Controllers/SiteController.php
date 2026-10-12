@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class SiteController extends Controller
 {
@@ -39,9 +40,13 @@ class SiteController extends Controller
      * Страница по адресу из админки: раздел каталога, статья или объект.
      * Так старые адреса сайта (/stati/…, /uslugi/…) открываются как раньше.
      */
-    public function page(Request $request, string $path): View
+    public function page(Request $request, string $path): View|RedirectResponse
     {
         $path = trim($path, '/');
+
+        if ($target = config('redirects')[$path] ?? null) {
+            return redirect($target, Response::HTTP_MOVED_PERMANENTLY);
+        }
 
         $catalog = CatalogPage::where('path', $path)->where('category', '!=', 'home')->first();
         if ($catalog) {
