@@ -12,20 +12,15 @@ class MapZone extends Model
 {
     protected $guarded = ['id'];
 
-    protected function casts(): array
-    {
-        return ['featured' => 'boolean', 'dashed' => 'boolean'];
-    }
-
     /**
      * Общие зоны в формате карты; если в базе пусто — из config/map.php.
      *
-     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string, featured?: bool, color?: ?string, dashed?: bool}>
+     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string}>
      */
     public static function forMap(): array
     {
         $zones = static::query()->orderBy('sort')->orderBy('id')
-            ->get(['title', 'text', 'href', 'shape', 'points', 'featured', 'color', 'dashed'])->toArray();
+            ->get(['title', 'text', 'href', 'shape', 'points'])->toArray();
 
         return $zones ?: config('map.zones', []);
     }
@@ -35,7 +30,7 @@ class MapZone extends Model
      * координаты приводятся к целым и к формату "x,y x,y".
      *
      * @param  array<int, mixed>|null  $zones
-     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string, featured?: bool, color?: ?string, dashed?: bool}>
+     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string}>
      */
     public static function sanitize(?array $zones): array
     {
@@ -55,9 +50,6 @@ class MapZone extends Model
                 'href' => filled($zone['href'] ?? null) ? mb_substr(trim($zone['href']), 0, 255) : null,
                 'shape' => $shape,
                 'points' => implode(' ', $points),
-                'featured' => (bool) ($zone['featured'] ?? false),
-                'color' => preg_match('/^#[0-9a-fA-F]{6}$/', (string) ($zone['color'] ?? '')) ? strtolower($zone['color']) : null,
-                'dashed' => (bool) ($zone['dashed'] ?? false),
             ];
         })->filter()->values()->all();
     }
