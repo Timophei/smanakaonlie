@@ -46,4 +46,11 @@ class SeoFilesTest extends TestCase
         $this->actingAs(User::factory()->create());
         $this->get('https://shamanka.online/')->assertOk()->assertDontSee('mc.yandex.ru');
     }
+
+    public function test_www_redirects_to_main_domain_keeping_path(): void
+    {
+        $this->get('http://www.shamanka.online/uslugi/Bani/?tag=1')
+            ->assertStatus(301)
+            ->assertRedirect('https://shamanka.online/uslugi/Bani/?tag=1');
+    }
 }

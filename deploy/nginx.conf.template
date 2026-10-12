@@ -5,10 +5,7 @@ server {
     listen [::]:80;
     server_name __DOMAIN__ www.__DOMAIN__;
 
-    # www.shamanka.online → shamanka.online, чтобы у поисковиков был один адрес
-    if ($host = www.__DOMAIN__) {
-        return 301 $scheme://__DOMAIN__$request_uri;
-    }
+    # С www на адрес без www перенаправляет сам сайт (здесь это мешало бы certbot)
 
     root __APP_DIR__/public;
     index index.php;
