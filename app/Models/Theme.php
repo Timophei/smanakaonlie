@@ -124,6 +124,11 @@ class Theme extends Model
         return $this->storageUrl($this->logo_image);
     }
 
+    public function wordmarkUrl(): ?string
+    {
+        return $this->storageUrl($this->wordmark_image);
+    }
+
     public function iconUrl(): ?string
     {
         return $this->storageUrl($this->icon_image);
