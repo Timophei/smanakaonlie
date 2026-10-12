@@ -86,6 +86,16 @@ if [ "$SKIP_NGINX" != 1 ]; then
     conf="/etc/nginx/sites-available/$DOMAIN"
     if [ -f "$conf" ]; then
         echo "Файл $conf уже есть — остальное в нём не трогаю (там может быть настроен HTTPS)."
+        # robots.txt теперь отдаёт сайт, а не файл
+        if grep -q 'location = /robots.txt  { access_log off; log_not_found off; }' "$conf"; then
+            cp "$conf" "$conf.bak"
+            sed -i 's|location = /robots.txt  { access_log off; log_not_found off; }|location = /robots.txt  { access_log off; try_files $uri /index.php?$query_string; }|' "$conf"
+            if nginx -t 2>/dev/null; then
+                systemctl reload nginx && echo "robots.txt переключён на сайт."
+            else
+                mv "$conf.bak" "$conf"
+            fi
+        fi
         # Поднимаем лимиты загрузки до значений из текущей версии (видео в статьях до 60 МБ)
         if grep -q 'upload_max_filesize=16M' "$conf" || grep -q 'client_max_body_size 64m' "$conf"; then
             cp "$conf" "$conf.bak"
@@ -126,4 +136,8 @@ say "Готово"
 echo "Сайт:    http://$DOMAIN/"
 echo "Админка: http://$DOMAIN/admin"
 echo "Когда DNS для $DOMAIN начнёт указывать на этот сервер, включите HTTPS:"
-echo "  certbot --nginx -d $DOMAIN"
+if [ "$DOMAIN" = "shamanka.online" ]; then
+    echo "  certbot --nginx -d shamanka.online -d www.shamanka.online"
+else
+    echo "  certbot --nginx -d $DOMAIN"
+fi

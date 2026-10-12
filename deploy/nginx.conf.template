@@ -3,7 +3,12 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name __DOMAIN__;
+    server_name __DOMAIN__ www.__DOMAIN__;
+
+    # www.shamanka.online → shamanka.online, чтобы у поисковиков был один адрес
+    if ($host = www.__DOMAIN__) {
+        return 301 $scheme://__DOMAIN__$request_uri;
+    }
 
     root __APP_DIR__/public;
     index index.php;
@@ -19,7 +24,8 @@ server {
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
+    # robots.txt отдаёт сайт: на основном домене открыт, на тестовом закрыт
+    location = /robots.txt  { access_log off; try_files $uri /index.php?$query_string; }
 
     location ~ ^/index\.php(/|$) {
         include fastcgi_params;
