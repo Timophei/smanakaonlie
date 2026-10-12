@@ -222,3 +222,106 @@ window.mapZonesEditor = function (config) {
     },
   };
 };
+
+// Привязка карты к местности: точка на рисунке + её координаты (из Яндекс Карт).
+window.mapAnchorsEditor = function (config) {
+  return {
+    state: config.state,
+    width: config.width,
+    height: config.height,
+    anchors: [],
+    selected: null,
+    dragging: false,
+    lastSaved: null,
+
+    init() {
+      this.load(this.state);
+      this.$watch('state', (value) => {
+        if (JSON.stringify(value ?? null) !== this.lastSaved) this.load(value);
+      });
+      new ResizeObserver(() => this.draw()).observe(this.$refs.svg);
+    },
+
+    load(value) {
+      this.anchors = (Array.isArray(value) ? value : []).map((a) => ({
+        label: a.label || '', x: a.x ?? null, y: a.y ?? null, coords: a.coords || '', error: a.error ?? null,
+      }));
+      if (this.selected !== null && this.selected >= this.anchors.length) this.selected = null;
+      this.draw();
+    },
+
+    save() {
+      const value = this.anchors.map(({ label, x, y, coords }) => ({ label, x, y, coords }));
+      this.lastSaved = JSON.stringify(value);
+      this.state = value;
+      this.draw();
+    },
+
+    add() {
+      this.anchors.push({ label: `Точка ${this.anchors.length + 1}`, x: null, y: null, coords: '', error: null });
+      this.selected = this.anchors.length - 1;
+      this.save();
+    },
+
+    remove(index) {
+      this.anchors.splice(index, 1);
+      this.selected = null;
+      this.save();
+    },
+
+    validCoords(text) {
+      return /-?\d{1,2}(\.\d+)?\s*[,; ]\s*-?\d{1,3}(\.\d+)?/.test(text || '');
+    },
+
+    pointFromEvent(event) {
+      const svg = this.$refs.svg;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const local = point.matrixTransform(svg.getScreenCTM().inverse());
+      return [Math.min(this.width, Math.max(0, Math.round(local.x))), Math.min(this.height, Math.max(0, Math.round(local.y)))];
+    },
+
+    onPointerDown(event) {
+      const pin = event.target.closest('[data-anchor]');
+      if (pin) {
+        this.selected = Number(pin.dataset.anchor);
+        this.dragging = true;
+        this.$refs.svg.setPointerCapture(event.pointerId);
+        this.draw();
+        return;
+      }
+      if (this.selected === null) return;
+      [this.anchors[this.selected].x, this.anchors[this.selected].y] = this.pointFromEvent(event);
+      this.anchors[this.selected].error = null;
+      this.save();
+    },
+
+    onPointerMove(event) {
+      if (!this.dragging || this.selected === null) return;
+      [this.anchors[this.selected].x, this.anchors[this.selected].y] = this.pointFromEvent(event);
+      this.draw();
+    },
+
+    onPointerUp() {
+      if (!this.dragging) return;
+      this.dragging = false;
+      this.anchors[this.selected].error = null;
+      this.save();
+    },
+
+    draw() {
+      const layer = this.$refs.layer;
+      if (!layer) return;
+      const scale = this.width / (this.$refs.svg.getBoundingClientRect().width || this.width);
+      layer.innerHTML = this.anchors.map((a, i) => {
+        if (a.x === null || a.y === null) return '';
+        const active = i === this.selected;
+        const r = (active ? 14 : 11) * scale;
+        return `<g data-anchor="${i}" class="mza-pin${active ? ' is-active' : ''}">
+          <circle cx="${a.x}" cy="${a.y}" r="${r}"></circle>
+          <text x="${a.x}" y="${a.y}" dy="0.35em" font-size="${13 * scale}">${i + 1}</text></g>`;
+      }).join('');
+    },
+  };
+};

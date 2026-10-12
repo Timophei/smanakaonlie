@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Filament\Pages\MapEditor;
+use App\Models\MapAnchor;
 use App\Models\MapZone;
+use App\Models\Place;
 use App\Models\Theme;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,5 +63,34 @@ class MapEditorTest extends TestCase
 
         $theme->update(['map_zones' => [['title' => 'Своя зона', 'text' => null, 'href' => null, 'shape' => 'line', 'points' => '0,0 10,10']]]);
         $this->get("/?tema={$theme->slug}")->assertSee('data-title="Своя зона"', false);
+    }
+
+    public function test_admin_saves_anchors_and_site_offers_where_am_i_and_places_by_coordinates(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $this->get('/admin/karta')->assertSee('mapAnchorsEditor', false);
+
+        Livewire::test(MapEditor::class)
+            ->set('data.anchors', [
+                ['label' => 'Мост', 'x' => 100, 'y' => 900, 'coords' => '52.10, 103.90'],
+                ['label' => 'Паром', 'x' => 1400, 'y' => 950, 'coords' => '52.1;103.96'],
+                ['label' => 'Утёс', 'x' => 1300, 'y' => 150, 'coords' => '52.13 103.95'],
+                ['label' => 'Устье', 'x' => 200, 'y' => 100, 'coords' => '52.13, 103.91'],
+                ['label' => 'Без координат', 'x' => 10, 'y' => 10, 'coords' => ''],
+            ])
+            ->call('save')
+            ->assertNotified();
+
+        $this->assertSame(4, MapAnchor::count());
+
+        auth()->logout();
+        Place::factory()->create(['title' => 'Дом по координатам', 'lat' => 52.115, 'lng' => 103.93, 'map_x' => null, 'map_y' => null]);
+        Place::factory()->create(['title' => 'Дом в Иркутске', 'lat' => 52.28, 'lng' => 104.28, 'map_x' => null, 'map_y' => null]);
+
+        $this->get('/')->assertOk()
+            ->assertSee('data-projection=', false)
+            ->assertSee('Где я?')
+            ->assertSee('data-title="Дом по координатам"', false)
+            ->assertDontSee('data-title="Дом в Иркутске"', false);
     }
 }
