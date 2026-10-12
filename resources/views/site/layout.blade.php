@@ -20,13 +20,7 @@
 @include('site.partials.icons')
 <header class="site-header">
     <div class="header">
-        @hasSection('brand')
-            @yield('brand')
-        @else
-            <a class="brand" href="/">
-                <img class="brand-logo" src="{{ $theme?->logoUrl() ?? '/img/logos/autumn-logo.png' }}" alt="Открой Шаманку" width="864" height="170">
-            </a>
-        @endif
+        @include('site.partials.brand', ['big' => $bigBrand ?? false])
         @include('site.partials.nav')
     </div>
 </header>

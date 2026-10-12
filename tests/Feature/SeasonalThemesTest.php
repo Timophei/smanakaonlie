@@ -86,7 +86,8 @@ class SeasonalThemesTest extends TestCase
         $this->get('/?tema=winter')
             ->assertOk()
             ->assertSee('src="/storage/themes/logos/winter-logo.png"', false)
-            ->assertSee('alt="Открой Шаманку"', false)
+            ->assertSee('aria-label="Открой Шаманку — на главную"', false)
+            ->assertSee('src="/storage/themes/logos/winter-wordmark.png"', false)
             ->assertSee('<link rel="icon" type="image/png" href="/storage/themes/logos/winter-icon.png">', false);
 
         $this->get('/uslugi/homes?tema=new-year')->assertSee('src="/storage/themes/logos/new-year-logo.png"', false);

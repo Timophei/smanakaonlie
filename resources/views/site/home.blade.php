@@ -1,13 +1,5 @@
-@extends('site.layout')
+@extends('site.layout', ['bigBrand' => true])
 
-@section('brand')
-    <a class="brand brand--big" href="/">
-        <span>
-            <img class="brand-logo" src="{{ $theme?->logoUrl() ?? '/img/logos/autumn-logo.png' }}" alt="Открой Шаманку" width="864" height="170">
-            <small>Тропы, утёс и жизнь на берегу Иркута.</small>
-        </span>
-    </a>
-@endsection
 
 @section('content')
     <div class="row" style="align-items: center">

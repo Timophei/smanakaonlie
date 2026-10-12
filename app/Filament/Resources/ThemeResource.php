@@ -65,7 +65,9 @@ class ThemeResource extends Resource
                     Forms\Components\FileUpload::make('logo_image')->label('Логотип с надписью (шапка)')->image()
                         ->disk('public')->directory('themes/logos')->maxSize(4096)
                         ->helperText('PNG с прозрачным фоном, цвет — как «Логотип и текст на шапке».'),
-                    Forms\Components\FileUpload::make('icon_image')->label('Знак (иконка вкладки браузера)')->image()
+                    Forms\Components\FileUpload::make('icon_image')->label('Знак (иконка вкладки и мобильная шапка)')->image()
+                        ->disk('public')->directory('themes/logos')->maxSize(2048),
+                    Forms\Components\FileUpload::make('wordmark_image')->label('Надпись без знака (мобильная шапка)')->image()
                         ->disk('public')->directory('themes/logos')->maxSize(2048),
                 ]),
 

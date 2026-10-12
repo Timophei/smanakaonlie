@@ -56,10 +56,12 @@ h3 { font-size: 22px; font-weight: 700; }
 .site-header a, .site-footer a { color: var(--t-logo); text-decoration: none; }
 .header, .footer { max-width: 1180px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
 .footer { padding: 24px 20px; font-size: 14px; }
-.brand { display: flex; align-items: center; gap: 12px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .brand-logo { height: 44px; width: auto; }
 .brand--big .brand-logo { height: clamp(48px, 9vw, 72px); }
-.brand small { display: block; font-size: 17px; font-weight: 400; letter-spacing: 0; margin-top: 8px; opacity: 0.9; }
+.brand-icon, .brand-word { display: none; }
+.brand-tagline { display: block; font-size: 17px; opacity: 0.9; }
+.brand:not(.brand--big) .brand-tagline { display: none; }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; font-size: 15px; font-weight: 600; }
 .nav a { padding: 12px 0; }
 .nav a[aria-current] { border-bottom: 2px solid currentColor; }
@@ -207,9 +209,14 @@ h3 { font-size: 22px; font-weight: 700; }
 @media (max-width: 720px) {
   .site-header { position: relative; }
   .header { flex-wrap: nowrap; padding: 10px 16px; gap: 12px; }
-  .brand-logo { height: 32px; }
-  .brand--big .brand-logo { height: 38px; }
-  .brand small { font-size: 12px; margin-top: 4px; }
+  /* Знак слева на высоту двух строк, справа надпись и подпись — пропорции из макета */
+  .brand { flex-direction: row; align-items: center; gap: 10px; min-width: 0; }
+  .brand-logo { display: none; }
+  .brand-icon { display: block; height: 52px; width: auto; flex: none; }
+  .brand-text { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .brand-word { display: block; width: min(222px, 100%); height: auto; }
+  /* подпись по ширине надписи: колонка текста = ширина экрана минус отступы, знак и кнопка меню (150px) */
+  .brand-tagline, .brand:not(.brand--big) .brand-tagline { display: block; font-size: min(11.5px, calc((100vw - 150px) * 0.054)); line-height: 1.2; white-space: nowrap; }
 
   .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; flex: none; width: 44px; height: 44px; padding: 10px; border: 1px solid currentColor; border-radius: 10px; background: transparent; color: var(--t-logo); cursor: pointer; }
   .nav-toggle span { display: block; height: 2px; background: currentColor; border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
