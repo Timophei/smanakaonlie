@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\CatalogPage;
 use App\Models\ContactClick;
 use App\Models\OwnerContact;
 use App\Models\Place;
@@ -18,38 +19,31 @@ class SiteController extends Controller
 {
     public function home(): View
     {
-        return view('site.home');
+        return view('site.home', ['seo' => CatalogPage::firstWhere('category', 'home')]);
     }
 
     /** Список жилья: /uslugi/homes */
     public function hotels(Request $request): View
     {
-        $tag = $request->filled('tag') ? Tag::find($request->integer('tag')) : null;
-
-        $places = $this->visible(Place::query())
-            ->where('category', 'hotel')
-            ->when($tag, fn (Builder $q) => $q->whereHas('tags', fn (Builder $t) => $t->whereKey($tag->id)))
-            ->with(['amenities', 'variants'])
-            ->orderBy('sort')->orderBy('title')
-            ->get();
-
-        $tags = Tag::whereHas('places', fn (Builder $q) => $this->visible($q)->where('category', 'hotel'))
-            ->orderBy('name')->get();
-
-        return view('site.hotels', compact('places', 'tags', 'tag'));
+        return $this->catalog($request, CatalogPage::forCategory('hotel'));
     }
 
     /**
-     * Страница по адресу из админки: сначала ищется статья, затем объект каталога.
+     * Страница по адресу из админки: раздел каталога, статья или объект.
      * Так старые адреса сайта (/stati/…, /uslugi/…) открываются как раньше.
      */
-    public function page(string $path): View
+    public function page(Request $request, string $path): View
     {
         $path = trim($path, '/');
 
+        $catalog = CatalogPage::where('path', $path)->where('category', '!=', 'home')->first();
+        if ($catalog) {
+            return $this->catalog($request, $catalog);
+        }
+
         $article = $this->visible(Article::query())->where('path', $path)->with('tags')->first();
         if ($article) {
-            return view('site.article', ['article' => $article, 'related' => $this->relatedPlaces($article)]);
+            return view('site.article', ['article' => $article, 'related' => $this->relatedPlaces($article), 'seo' => $article, 'seoImage' => $article->cover]);
         }
 
         $place = $this->visible(Place::query())
@@ -57,7 +51,38 @@ class SiteController extends Controller
             ->with(['amenities', 'variants', 'owner.contacts', 'tags'])
             ->firstOrFail();
 
-        return view('site.place', compact('place'));
+        return view('site.place', [
+            'place' => $place,
+            'catalog' => CatalogPage::forCategory($place->category),
+            'seo' => $place,
+            'seoImage' => $place->cover,
+        ]);
+    }
+
+    /** Раздел каталога: объекты одной категории с фильтром по меткам */
+    private function catalog(Request $request, CatalogPage $catalog): View
+    {
+        $category = $catalog->category;
+        $tag = $request->filled('tag') ? Tag::find($request->integer('tag')) : null;
+
+        $places = $this->visible(Place::query())
+            ->where('category', $category)
+            ->when($tag, fn (Builder $q) => $q->whereHas('tags', fn (Builder $t) => $t->whereKey($tag->id)))
+            ->with(['amenities', 'variants'])
+            ->orderBy('sort')->orderBy('title')
+            ->get();
+
+        $tags = Tag::whereHas('places', fn (Builder $q) => $this->visible($q)->where('category', $category))
+            ->orderBy('name')->get();
+
+        return view('site.catalog', [
+            'catalog' => $catalog,
+            'places' => $places,
+            'tags' => $tags,
+            'tag' => $tag,
+            'seo' => $catalog,
+            'seoImage' => $places->firstWhere('cover')?->cover,
+        ]);
     }
 
     /**

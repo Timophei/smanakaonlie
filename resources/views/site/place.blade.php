@@ -20,12 +20,12 @@
     $months = [1 => 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
 @endphp
 
-@section('title', $place->seo_title ?: $place->title.' — жильё в Шаманке')
+@section('title', $place->seo_title ?: $place->title.' — '.$catalog->h1)
 @section('description', $place->seo_description ?: $place->short_description)
 
 @section('content')
     <nav class="crumbs" aria-label="Хлебные крошки">
-        <a href="/">Главная</a><span>/</span><a href="{{ route('hotels', absolute: false) }}/">Жильё</a><span>/</span><span>{{ $place->title }}</span>
+        <a href="/">Главная</a><span>/</span><a href="{{ $catalog->url() }}">{{ $catalog->h1 }}</a><span>/</span><span>{{ $place->title }}</span>
     </nav>
 
     <div class="stack">
@@ -33,7 +33,7 @@
         <div class="chips" style="align-items: center; gap: 8px 12px">
             @if ($place->address)<span style="display: inline-flex; align-items: center; gap: 6px"><svg class="icon" style="color: var(--t-icon)" aria-hidden="true"><use href="#i-pin"/></svg>{{ $place->address }}</span>@endif
             @if ($place->status !== 'published')<span class="chip chip--draft">Черновик — видите только вы</span>@endif
-            @unless ($place->is_open)<span class="chip chip--draft">Сейчас не принимает гостей</span>@endunless
+            @unless ($place->is_open)<span class="chip chip--draft">Сейчас не работает</span>@endunless
             @foreach ($place->tags as $tag)<span class="chip">{{ $tag->name }}</span>@endforeach
         </div>
     </div>
@@ -128,12 +128,12 @@
             @endforeach
 
             @if ($place->owner)
-                <div class="book-note">Хозяин: {{ $place->owner->name }}. Скажите, что нашли дом на Шаманка.online.</div>
+                <div class="book-note">@if ($place->owner->name !== $place->title)Хозяин: {{ $place->owner->name }}. @endif Скажите, что нашли {{ $place->category === 'hotel' ? 'дом' : 'вас' }} на Шаманка.online.</div>
             @else
                 <div class="book-note">Контакты хозяина скоро появятся. Пока можно написать нам: <a href="mailto:main@shamanka.online">main@shamanka.online</a></div>
             @endif
         </aside>
     </div>
 
-    <a class="more" href="{{ route('hotels', absolute: false) }}/"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Всё жильё в Шаманке</a>
+    <a class="more" href="{{ $catalog->url() }}"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>{{ $catalog->h1 }} — все предложения</a>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\SeoFields;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Models\Article;
 use App\Models\Place;
@@ -57,7 +58,7 @@ class ArticleResource extends Resource
                             Forms\Components\TextInput::make('value')->label('Значение')->required()->maxLength(60),
                         ]),
                 ]),
-                Forms\Components\Tabs\Tab::make('Публикация и поиск')->columns(2)->schema([
+                Forms\Components\Tabs\Tab::make('Публикация')->columns(2)->schema([
                     Forms\Components\TextInput::make('path')->label('Адрес страницы')->required()->maxLength(200)
                         ->unique(ignoreRecord: true)->prefix('shamanka.online/')->regex('/^[A-Za-z0-9_\-\/]+$/')
                         ->helperText('Для перенесённых статей — старый адрес один в один, например stati/tropa'),
@@ -65,9 +66,8 @@ class ArticleResource extends Resource
                     Forms\Components\Select::make('tags')->label('Метки')->relationship('tags', 'name')->multiple()->preload()
                         ->helperText('По меткам подбираются предложения в конце статьи и в блоке «Подборка».'),
                     Forms\Components\TextInput::make('sort')->label('Порядок')->numeric()->default(0),
-                    Forms\Components\TextInput::make('seo_title')->label('Заголовок для поисковиков')->maxLength(255)->columnSpanFull(),
-                    Forms\Components\Textarea::make('seo_description')->label('Описание для поисковиков')->maxLength(300)->rows(2)->columnSpanFull(),
                 ]),
+                Forms\Components\Tabs\Tab::make('SEO')->schema(SeoFields::make('articles/og')),
             ]),
         ]);
     }

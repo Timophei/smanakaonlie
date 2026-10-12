@@ -38,6 +38,10 @@ class Place extends Model
         'house_night' => 'за дом в сутки',
         'person_night' => 'за человека в сутки',
         'room_night' => 'за номер в сутки',
+        'evening' => 'за вечер',
+        'hour' => 'за час',
+        'person' => 'с человека',
+        'piece' => 'за штуку',
     ];
 
     public const BANKS = [
