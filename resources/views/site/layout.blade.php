@@ -8,27 +8,34 @@
     <link rel="canonical" href="{{ config('app.canonical_root') }}{{ request()->path() === '/' ? '/' : '/'.request()->path().'/' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="/css/site.css?v={{ filemtime(public_path('css/site.css')) }}">
+    @if ($theme)
+        <style>:root { {{ $theme->cssVariables() }} }</style>
+    @endif
 </head>
-<body>
+<body data-theme="{{ $theme?->slug }}">
 @include('site.partials.icons')
-<div class="wrap">
-    @hasSection('header')
-        @yield('header')
-    @else
-        <header class="header">
+<header class="site-header">
+    <div class="header">
+        @hasSection('brand')
+            @yield('brand')
+        @else
             <a class="brand" href="/">
                 <img src="/img/logo.jpg" alt="" width="48" height="48">
                 Открой Шаманку
             </a>
-            @include('site.partials.nav')
-        </header>
-    @endif
+        @endif
+        @include('site.partials.nav')
+    </div>
+</header>
 
+<div class="wrap">
     @yield('content')
+</div>
 
-    <footer class="footer">
+<footer class="site-footer">
+    <div class="footer">
         <div><strong>Шаманка.online</strong>Путеводитель по берегам Иркута</div>
         <nav aria-label="Меню в подвале">
             <a href="/#routes">Маршруты</a>
@@ -37,8 +44,8 @@
             <a href="/#contact">Связаться</a>
         </nav>
         <div>Берегите природу. Уносите мусор с собой.</div>
-    </footer>
-</div>
+    </div>
+</footer>
 <script src="/js/map.js?v={{ filemtime(public_path('js/map.js')) }}" defer></script>
 <script src="/js/site.js?v={{ filemtime(public_path('js/site.js')) }}" defer></script>
 </body>

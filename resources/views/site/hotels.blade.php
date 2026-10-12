@@ -50,7 +50,7 @@
             @if ($loop->iteration === 2 || ($loop->last && $loop->count < 2))
                 <a class="promo" href="/uslugi/Bani/">
                     <img src="/img/service-bani.jpg" alt="" loading="lazy">
-                    <span><span class="small" style="font-weight: 600; color: #8a3f06">К жилью в придачу</span><b>После тропы — в баню</b>Бани в Шаманке для отдыха вдвоём, семьёй или компанией.</span>
+                    <span><span class="promo-kicker">К жилью в придачу</span><b>После тропы — в баню</b>Бани в Шаманке для отдыха вдвоём, семьёй или компанией.</span>
                     <span class="more">Смотреть бани <svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></span>
                 </a>
             @endif

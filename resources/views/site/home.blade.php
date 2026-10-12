@@ -1,24 +1,21 @@
 @extends('site.layout')
 
-@section('header')
-    <header class="header" style="border-bottom: 0; padding-bottom: 0">
-        <a class="brand brand--big" href="/">
-            <img src="/img/logo.jpg" alt="" width="72" height="72">
-            <span>Открой Шаманку<small>Тропы, утёс и жизнь на берегу Иркута.</small></span>
-        </a>
-        @include('site.partials.nav')
-    </header>
+@section('brand')
+    <a class="brand brand--big" href="/">
+        <img src="/img/logo.jpg" alt="" width="72" height="72">
+        <span>Открой Шаманку<small>Тропы, утёс и жизнь на берегу Иркута.</small></span>
+    </a>
 @endsection
 
 @section('content')
     <div class="row" style="align-items: center">
         <div class="notice">
-            <svg class="icon" style="font-size: 30px; color: var(--accent)" aria-hidden="true"><use href="#i-shield"/></svg>
+            <svg class="icon" style="font-size: 30px" aria-hidden="true"><use href="#i-shield"/></svg>
             <div>
                 <b>Особо охраняемая природная территория</b>
                 <div class="small">Перед прогулкой ознакомьтесь с правилами посещения.</div>
             </div>
-            <a class="btn btn-amber" href="https://ooptirk.ru/registration/" rel="noopener">Пройти инструктаж <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="btn" href="https://ooptirk.ru/registration/" rel="noopener">Пройти инструктаж <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
         <div style="flex: 1 1 220px" class="small">
             Выберите маршрут для прогулки или останьтесь на выходные.<br>
