@@ -38,10 +38,20 @@
         <div class="imap-canvas" style="aspect-ratio: {{ $map['width'] }} / {{ $map['height'] }}">
             <img src="{{ $map['image'] }}" width="{{ $map['width'] }}" height="{{ $map['height'] }}"
                  alt="Рисованная карта Шаманки: Шаманский утёс, река Шаманка, Иркут, паромная переправа и подвесной мост">
+            @php($featured = collect($map['zones'])->filter(fn ($zone) => ! empty($zone['featured'])))
             <svg class="imap-zones" viewBox="0 0 {{ $map['width'] }} {{ $map['height'] }}" role="group" aria-label="Места на карте">
-                @foreach ($map['zones'] as $zone)
+                {{-- Подсвеченные зоны: всегда видны, своим цветом; тёмная подложка — чтобы читались на любом фоне --}}
+                <g class="imap-featured" aria-hidden="true">
+                    @foreach ($featured as $index => $zone)
+                        @php($tag = $zone['shape'] === 'line' ? 'polyline' : 'polygon')
+                        <{{ $tag }} class="imap-hl-halo imap-hl--{{ $zone['shape'] }}" points="{{ $zone['points'] }}" />
+                        <{{ $tag }} class="imap-hl imap-hl--{{ $zone['shape'] }} @if(! empty($zone['dashed'])) is-dashed @endif" points="{{ $zone['points'] }}"
+                            style="--zone-color: {{ $zone['color'] ?? '#e11d48' }}" />
+                    @endforeach
+                </g>
+                @foreach ($map['zones'] as $index => $zone)
                     <{{ $zone['shape'] === 'line' ? 'polyline' : 'polygon' }}
-                        class="imap-zone imap-zone--{{ $zone['shape'] }}" points="{{ $zone['points'] }}"
+                        class="imap-zone imap-zone--{{ $zone['shape'] }}" points="{{ $zone['points'] }}" data-zone-id="z{{ $index }}"
                         tabindex="0" role="button" aria-label="{{ $zone['title'] }}"
                         data-title="{{ $zone['title'] }}" data-text="{{ $zone['text'] }}" data-href="{{ $zone['href'] }}" />
                 @endforeach
@@ -61,6 +71,23 @@
             </div>
         </div>
     </div>
+    @if ($featured->isNotEmpty())
+        <div class="imap-key" aria-label="Главное на карте">
+            @foreach ($featured as $index => $zone)
+                <button type="button" class="imap-key-item" data-zone-show="z{{ $index }}" style="--zone-color: {{ $zone['color'] ?? '#e11d48' }}">
+                    <svg viewBox="0 0 28 12" aria-hidden="true">
+                        @if ($zone['shape'] === 'line')
+                            <line x1="2" y1="6" x2="26" y2="6" class="imap-key-halo" />
+                            <line x1="2" y1="6" x2="26" y2="6" class="imap-key-line @if(! empty($zone['dashed'])) is-dashed @endif" />
+                        @else
+                            <rect x="4" y="1" width="20" height="10" rx="3" class="imap-key-area" />
+                        @endif
+                    </svg>
+                    {{ $zone['title'] }}
+                </button>
+            @endforeach
+        </div>
+    @endif
     <div class="imap-legend small">
         @if ($projection)
             <button type="button" class="btn-outline imap-locate" data-locate><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span data-locate-label>Где я?</span></button>
