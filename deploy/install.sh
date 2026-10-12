@@ -86,6 +86,16 @@ if [ "$SKIP_NGINX" != 1 ]; then
     conf="/etc/nginx/sites-available/$DOMAIN"
     if [ -f "$conf" ]; then
         echo "Файл $conf уже есть — остальное в нём не трогаю (там может быть настроен HTTPS)."
+        # Перенаправление с www теперь делает сайт: if в nginx конфликтовал с certbot
+        if grep -q 'if (\$host = www\.' "$conf" && grep -q 'shamanka.online → shamanka.online' "$conf"; then
+            cp "$conf" "$conf.bak"
+            sed -i '/# www.shamanka.online → shamanka.online/,/^    }$/d' "$conf"
+            if nginx -t 2>/dev/null; then
+                systemctl reload nginx && echo "Перенаправление с www перенесено в сайт."
+            else
+                mv "$conf.bak" "$conf"
+            fi
+        fi
         # robots.txt теперь отдаёт сайт, а не файл
         if grep -q 'location = /robots.txt  { access_log off; log_not_found off; }' "$conf"; then
             cp "$conf" "$conf.bak"
