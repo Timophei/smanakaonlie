@@ -2,7 +2,7 @@
 @php
     $map = config('map');
     $map['image'] = $theme?->mapUrl() ?? $map['image'];
-    $map['zones'] = $theme?->map_zones ?: $map['zones'];
+    $map['zones'] = $theme?->map_zones ?: \App\Models\MapZone::forMap();
     $markers = \App\Models\Place::query()
         ->when(! auth()->check(), fn ($query) => $query->where('status', 'published'))
         ->where('status', '!=', 'hidden')
