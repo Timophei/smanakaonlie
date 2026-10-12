@@ -10,12 +10,25 @@ document.addEventListener('click', async (event) => {
       headers: { 'X-CSRF-TOKEN': button.dataset.token, Accept: 'application/json' },
     });
     if (!response.ok) throw new Error(response.status);
-    const { phone } = await response.json();
-    const link = document.createElement('a');
-    link.className = button.className;
-    link.href = 'tel:' + phone.replace(/[^\d+]/g, '');
-    link.textContent = phone;
-    button.replaceWith(link);
+    const { phones } = await response.json();
+    // Каждый номер — отдельная кнопка-ссылка tel:, с подписью, чей он
+    const list = document.createElement('div');
+    list.className = 'phone-list';
+    phones.forEach(({ number, person, tel }) => {
+      const link = document.createElement('a');
+      link.className = button.className + ' phone-link';
+      link.href = tel;
+      const digits = document.createElement('b');
+      digits.textContent = number;
+      link.append(digits);
+      if (person) {
+        const who = document.createElement('span');
+        who.textContent = person;
+        link.append(who);
+      }
+      list.append(link);
+    });
+    button.replaceWith(list);
   } catch (error) {
     button.disabled = false;
     button.querySelector('[data-label]').textContent = 'Не получилось, попробуйте ещё раз';

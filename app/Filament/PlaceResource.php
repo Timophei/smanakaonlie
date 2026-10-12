@@ -3,9 +3,11 @@
 namespace App\Filament;
 
 use App\Filament\Forms\SeoFields;
+use App\Filament\Resources\OwnerResource;
 use App\Models\Place;
 use App\Models\Tag;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -141,12 +143,15 @@ abstract class PlaceResource extends Resource
 
                 Forms\Components\Tabs\Tab::make('Хозяин')->schema([
                     Forms\Components\Select::make('owner_id')->label('Хозяин')->relationship('owner', 'name')
-                        ->searchable()->preload()
-                        ->createOptionForm([
-                            Forms\Components\TextInput::make('name')->label('Имя')->required()->maxLength(150),
-                            Forms\Components\TextInput::make('phone')->label('Телефон')->tel()->maxLength(30),
-                        ])
-                        ->helperText('Телефон и мессенджеры задаются в карточке хозяина и общие для всех его объектов'),
+                        ->searchable(['name', 'first_name', 'last_name'])->preload()->live()
+                        ->createOptionForm(OwnerResource::fields())
+                        ->createOptionModalHeading('Новый хозяин')
+                        ->editOptionForm(OwnerResource::fields())
+                        ->editOptionModalHeading('Хозяин')
+                        ->suffixAction(fn (?string $state): ?Action => $state ? Action::make('openOwner')
+                            ->icon('heroicon-o-arrow-top-right-on-square')->tooltip('Открыть карточку хозяина в новой вкладке')
+                            ->url(OwnerResource::getUrl('edit', ['record' => $state]), shouldOpenInNewTab: true) : null)
+                        ->helperText('Карандаш — поправить хозяина прямо здесь, стрелка — открыть его карточку. Телефоны и мессенджеры общие для всех его объектов.'),
                 ]),
 
                 Forms\Components\Tabs\Tab::make('Подбор')->columns(2)->schema([

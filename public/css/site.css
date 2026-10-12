@@ -368,3 +368,9 @@ h3 { font-size: 22px; font-weight: 700; }
 .lightbox-btn:disabled { opacity: 0; pointer-events: none; }
 .lightbox-count { position: absolute; top: 20px; left: 20px; font-size: 14px; opacity: 0.7; }
 @media (max-width: 720px) { .lightbox-prev, .lightbox-next { display: none; } }
+
+/* Телефоны хозяина после «Показать телефон»: номер и подпись, чей он */
+.phone-list { display: flex; flex-direction: column; gap: 8px; }
+.phone-link { flex-direction: column; gap: 2px; line-height: 1.2; }
+.phone-link b { color: inherit; }
+.phone-link span { font-size: 13px; font-weight: 400; opacity: 0.85; }

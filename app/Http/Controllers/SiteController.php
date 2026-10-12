@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\CatalogPage;
 use App\Models\ContactClick;
 use App\Models\OwnerContact;
+use App\Models\OwnerPhone;
 use App\Models\Photo;
 use App\Models\Place;
 use App\Models\Tag;
@@ -60,7 +61,7 @@ class SiteController extends Controller
 
         $place = $this->visible(Place::query())
             ->where('path', $path)
-            ->with(['amenities', 'variants', 'owner.contacts', 'tags'])
+            ->with(['amenities', 'variants', 'owner.contacts', 'owner.phones', 'tags'])
             ->firstOrFail();
 
         return view('site.place', [
@@ -114,13 +115,16 @@ class SiteController extends Controller
             ->orderByDesc('is_featured')->orderBy('sort')->limit(3)->get();
     }
 
-    /** «Показать телефон»: считаем нажатие и отдаём номер */
+    /** «Показать телефон»: считаем нажатие и отдаём все номера хозяина с подписями */
     public function phone(Request $request, Place $place): JsonResponse
     {
-        abort_unless($this->visible(Place::whereKey($place->id))->exists() && $place->owner?->phone, 404);
+        $phones = $place->owner?->phones ?? collect();
+        abort_unless($this->visible(Place::whereKey($place->id))->exists() && $phones->isNotEmpty(), 404);
         $this->logClick($request, $place, 'phone');
 
-        return response()->json(['phone' => $place->owner->phone]);
+        return response()->json([
+            'phones' => $phones->map(fn (OwnerPhone $phone): array => ['number' => $phone->number, 'person' => $phone->person, 'tel' => $phone->telUri()])->values(),
+        ]);
     }
 
     /** «Написать»: считаем нажатие и уводим в мессенджер хозяина */
