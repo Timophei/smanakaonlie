@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/uslugi/homes', [SiteController::class, 'hotels'])->name('hotels');
-Route::view('/karta', 'site.map-page')->name('map');
 
 Route::middleware('throttle:30,1')->group(function () {
     Route::post('/kontakt/{place}/telefon', [SiteController::class, 'phone'])->name('place.phone');

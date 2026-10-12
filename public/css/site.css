@@ -65,7 +65,6 @@ h3 { font-size: 22px; font-weight: 700; }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 28px; font-size: 15px; font-weight: 600; }
 .nav a { padding: 12px 0; }
 .nav a[aria-current] { border-bottom: 2px solid currentColor; }
-.nav .btn-outline { padding: 9px 14px; border-color: currentColor; color: inherit; }
 .footer strong { display: block; font-size: 19px; }
 .footer nav { display: flex; flex-wrap: wrap; gap: 4px 24px; font-weight: 600; }
 .footer nav a { padding: 12px 0; }
@@ -218,17 +217,15 @@ h3 { font-size: 22px; font-weight: 700; }
   /* подпись по ширине надписи: колонка текста = ширина экрана минус отступы, знак и кнопка меню (150px) */
   .brand-tagline, .brand:not(.brand--big) .brand-tagline { display: block; font-size: min(11.5px, calc((100vw - 150px) * 0.054)); line-height: 1.2; white-space: nowrap; }
 
-  .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; flex: none; width: 44px; height: 44px; padding: 10px; border: 1px solid currentColor; border-radius: 10px; background: transparent; color: var(--t-logo); cursor: pointer; }
-  .nav-toggle span { display: block; height: 2px; background: currentColor; border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
-  .site-header.is-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .site-header.is-open .nav-toggle span:nth-child(2) { opacity: 0; }
-  .site-header.is-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-toggle { display: flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; padding: 0; border: 1px solid currentColor; border-radius: 10px; background: transparent; color: var(--t-logo); cursor: pointer; -webkit-appearance: none; appearance: none; }
+  .nav-toggle svg { display: block; width: 24px; height: 24px; }
+  .nav-toggle .nav-toggle-close, .site-header.is-open .nav-toggle .nav-toggle-open { display: none; }
+  .site-header.is-open .nav-toggle .nav-toggle-close { display: block; }
 
   .js .nav { display: none; position: absolute; z-index: 20; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 4px 16px 16px; background: var(--t-header-bg); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); font-size: 17px; }
   .js .site-header.is-open .nav { display: flex; }
   .nav a { padding: 14px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent); }
   .nav a[aria-current] { border-bottom-width: 1px; text-decoration: underline; text-underline-offset: 5px; }
-  .nav .btn-outline { margin-top: 14px; padding: 12px; border-bottom-width: 2px; }
 
   .wrap { padding: 12px 16px 32px; gap: 16px; }
 
