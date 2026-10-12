@@ -78,7 +78,7 @@ class SeasonalThemesTest extends TestCase
     {
         Theme::where('slug', 'autumn')->update(['tokens' => json_encode(['page-bg' => 'red;}</style><script>', 'text' => '#123456'])]);
 
-        $this->get('/?tema=autumn')->assertSee('--t-text: #123456;', false)->assertDontSee('<script>', false);
+        $this->get('/?tema=autumn')->assertSee('--t-text: #123456;', false)->assertDontSee('red;}</style><script>', false);
     }
 
     public function test_header_and_browser_tab_use_the_theme_logo(): void

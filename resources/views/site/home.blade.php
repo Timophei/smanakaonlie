@@ -12,14 +12,14 @@
 @section('content')
     <div class="row" style="align-items: center">
         <div class="notice">
-            <svg class="icon" style="font-size: 30px" aria-hidden="true"><use href="#i-shield"/></svg>
-            <div>
-                <b>Особо охраняемая природная территория</b>
-                <div class="small">Перед прогулкой ознакомьтесь с правилами посещения.</div>
+            <svg class="icon notice-icon" aria-hidden="true"><use href="#i-shield"/></svg>
+            <div class="notice-text">
+                <b>Особо охраняемая <span class="only-desktop">природная </span>территория</b>
+                <div class="small only-desktop">Перед прогулкой ознакомьтесь с правилами посещения.</div>
             </div>
-            <a class="btn" href="https://ooptirk.ru/registration/" rel="noopener">Пройти инструктаж <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="btn" href="https://ooptirk.ru/registration/" rel="noopener"><span class="only-desktop">Пройти инструктаж</span><span class="only-mobile">Инструктаж</span> <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
-        <div style="flex: 1 1 220px" class="small">
+        <div style="flex: 1 1 220px" class="small notice-aside">
             Выберите маршрут для прогулки или останьтесь на выходные.<br>
             <a class="more" href="/stati/transport/">Как добраться <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
@@ -27,10 +27,10 @@
 
     <section id="map" class="stack">
         <div class="between">
-            <h2 style="font-size: 30px; font-weight: 700">Шаманка как на ладони</h2>
+            <h2 class="map-title">Шаманка как на ладони</h2>
         </div>
         @include('site.partials.map', ['collapsible' => true])
-        <div class="row" style="gap: 14px">
+        <div class="row quick-list">
             <a class="card quick" href="/stati/tropa/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-hike"/></svg></span><span class="grow"><b>Тропа «Шаманка»</b><span class="small muted">Прогулка к утёсу</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
             <a class="card quick" href="/stati/LesChudes/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-tree"/></svg></span><span class="grow"><b>Лес чудес</b><span class="small muted">Лес и поляна</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
             <a class="card quick" href="/stati/na_piknik/"><span class="round"><svg class="icon" aria-hidden="true"><use href="#i-table"/></svg></span><span class="grow"><b>На пикник</b><span class="small muted">Отдых у реки</span></span><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></a>
@@ -43,21 +43,25 @@
             <h2>Выберите свою прогулку</h2>
             <p class="lead">На утёс, в лес или к реке — найдите свой маршрут.</p>
         </div>
-        <div class="row">
-            @foreach ([
-                ['/stati/tropa/', 'route-tropa.jpg', 'Тропа вдоль красного утёса над рекой', 'Тропа «Шаманка»', 'Виды с утёса, лесные тропы и берега Иркута.'],
-                ['/stati/LesChudes/', 'route-les.jpg', 'Сосновый лес с валунами', 'Лес чудес и поляна', 'Лёгкая прогулка через лес к поляне у реки.'],
-                ['/stati/na_piknik/', 'route-piknik.jpg', 'Пикник на берегу реки', 'На пикник', 'Места для спокойного отдыха на берегу и в лесу.'],
-            ] as [$href, $img, $alt, $title, $text])
-                <article class="card tile">
-                    <img src="/img/{{ $img }}" alt="{{ $alt }}" loading="lazy">
-                    <div class="card-body">
-                        <h3>{{ $title }}</h3>
-                        <p class="muted">{{ $text }}</p>
-                        <a class="more" href="{{ $href }}">Подробнее <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
-                    </div>
-                </article>
-            @endforeach
+        <div class="carousel" data-carousel>
+            <button type="button" class="carousel-btn carousel-btn--prev" data-carousel-prev aria-label="Предыдущий маршрут"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button>
+            <div class="row carousel-track" data-carousel-track>
+                @foreach ([
+                    ['/stati/tropa/', 'route-tropa.jpg', 'Тропа вдоль красного утёса над рекой', 'Тропа «Шаманка»', 'Виды с утёса, лесные тропы и берега Иркута.'],
+                    ['/stati/LesChudes/', 'route-les.jpg', 'Сосновый лес с валунами', 'Лес чудес и поляна', 'Лёгкая прогулка через лес к поляне у реки.'],
+                    ['/stati/na_piknik/', 'route-piknik.jpg', 'Пикник на берегу реки', 'На пикник', 'Места для спокойного отдыха на берегу и в лесу.'],
+                ] as [$href, $img, $alt, $title, $text])
+                    <article class="card tile">
+                        <img src="/img/{{ $img }}" alt="{{ $alt }}" loading="lazy">
+                        <div class="card-body">
+                            <h3>{{ $title }}</h3>
+                            <p class="muted">{{ $text }}</p>
+                            <a class="more" href="{{ $href }}">Подробнее <svg class="icon" aria-hidden="true"><use href="#i-out"/></svg></a>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+            <button type="button" class="carousel-btn carousel-btn--next" data-carousel-next aria-label="Следующий маршрут"><svg class="icon" aria-hidden="true"><use href="#i-next"/></svg></button>
         </div>
     </section>
 
