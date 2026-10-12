@@ -10,9 +10,9 @@ class InteractiveMapTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_map_page_shows_zones(): void
+    public function test_home_map_shows_zones(): void
     {
-        $this->get('/karta/')
+        $this->get('/')
             ->assertOk()
             ->assertSee('data-title="Шаманский утёс"', false)
             ->assertSee('data-title="Подвесной мост"', false);
@@ -23,10 +23,11 @@ class InteractiveMapTest extends TestCase
         $this->get('/')->assertOk()->assertSee('data-map', false);
     }
 
-    public function test_map_is_collapsed_on_home_and_open_on_its_own_page(): void
+    public function test_map_is_collapsed_on_home_and_has_no_separate_page(): void
     {
-        $this->get('/')->assertSee('data-collapsible', false)->assertSee('Развернуть карту')->assertSee('Свернуть карту');
-        $this->get('/karta')->assertDontSee('data-collapsible', false);
+        $this->get('/')->assertSee('data-collapsible', false)->assertSee('Развернуть карту')->assertSee('Свернуть карту')
+            ->assertDontSee('href="/karta/"', false);
+        $this->get('/karta')->assertNotFound();
     }
 
     public function test_map_shows_pins_only_for_published_places_with_a_point(): void
@@ -35,7 +36,7 @@ class InteractiveMapTest extends TestCase
         $withoutPoint = Place::factory()->create();
         $draft = Place::factory()->draft()->create(['map_x' => 10, 'map_y' => 10]);
 
-        $this->get('/karta')
+        $this->get('/')
             ->assertOk()
             ->assertSee('aria-label="'.e($onMap->title).'"', false)
             ->assertSee('left: 40.5%; top: 37.85%', false)
