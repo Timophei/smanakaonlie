@@ -80,4 +80,15 @@ class SeasonalThemesTest extends TestCase
 
         $this->get('/?tema=autumn')->assertSee('--t-text: #123456;', false)->assertDontSee('<script>', false);
     }
+
+    public function test_header_and_browser_tab_use_the_theme_logo(): void
+    {
+        $this->get('/?tema=winter')
+            ->assertOk()
+            ->assertSee('src="/storage/themes/logos/winter-logo.png"', false)
+            ->assertSee('alt="Открой Шаманку"', false)
+            ->assertSee('<link rel="icon" type="image/png" href="/storage/themes/logos/winter-icon.png">', false);
+
+        $this->get('/uslugi/homes?tema=new-year')->assertSee('src="/storage/themes/logos/new-year-logo.png"', false);
+    }
 }

@@ -61,6 +61,14 @@ class ThemeResource extends Resource
                     ),
                 ]),
 
+                Forms\Components\Tabs\Tab::make('Логотип')->columns(2)->schema([
+                    Forms\Components\FileUpload::make('logo_image')->label('Логотип с надписью (шапка)')->image()
+                        ->disk('public')->directory('themes/logos')->maxSize(4096)
+                        ->helperText('PNG с прозрачным фоном, цвет — как «Логотип и текст на шапке».'),
+                    Forms\Components\FileUpload::make('icon_image')->label('Знак (иконка вкладки браузера)')->image()
+                        ->disk('public')->directory('themes/logos')->maxSize(2048),
+                ]),
+
                 Forms\Components\Tabs\Tab::make('Карта')->schema([
                     Forms\Components\FileUpload::make('map_image')->label('Подложка карты')->image()
                         ->disk('public')->directory('themes')->maxSize(12288)

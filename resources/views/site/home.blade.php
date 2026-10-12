@@ -2,8 +2,10 @@
 
 @section('brand')
     <a class="brand brand--big" href="/">
-        <img src="/img/logo.jpg" alt="" width="72" height="72">
-        <span>Открой Шаманку<small>Тропы, утёс и жизнь на берегу Иркута.</small></span>
+        <span>
+            <img class="brand-logo" src="{{ $theme?->logoUrl() ?? '/img/logos/autumn-logo.png' }}" alt="Открой Шаманку" width="864" height="170">
+            <small>Тропы, утёс и жизнь на берегу Иркута.</small>
+        </span>
     </a>
 @endsection
 
