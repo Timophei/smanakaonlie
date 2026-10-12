@@ -11,3 +11,15 @@ ym({{ (int) $metrikaId }}, "init", {clickmap:true, trackLinks:true, accurateTrac
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/{{ (int) $metrikaId }}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
 @endif
+{{-- Своя аналитика: просмотры видны в админке, раздел «Аналитика» --}}
+@if (App\Http\Controllers\SeoController::isMainHost(request()) && ! auth()->check())
+<script>
+(function () {
+  try {
+    var data = JSON.stringify({ p: location.pathname, q: location.search, r: document.referrer });
+    if (navigator.sendBeacon) { navigator.sendBeacon('/a/hit', new Blob([data], { type: 'application/json' })); }
+    else { fetch('/a/hit', { method: 'POST', body: data, keepalive: true, headers: { 'Content-Type': 'application/json' } }); }
+  } catch (e) {}
+})();
+</script>
+@endif
