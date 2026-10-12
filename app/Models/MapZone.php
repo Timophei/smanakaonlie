@@ -12,15 +12,20 @@ class MapZone extends Model
 {
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return ['label' => 'array'];
+    }
+
     /**
      * Общие зоны в формате карты; если в базе пусто — из config/map.php.
      *
-     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string}>
+     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string, label?: ?array, outline?: ?string}>
      */
     public static function forMap(): array
     {
         $zones = static::query()->orderBy('sort')->orderBy('id')
-            ->get(['title', 'text', 'href', 'shape', 'points'])->toArray();
+            ->get(['title', 'text', 'href', 'shape', 'points', 'label', 'outline'])->toArray();
 
         return $zones ?: config('map.zones', []);
     }
@@ -30,7 +35,7 @@ class MapZone extends Model
      * координаты приводятся к целым и к формату "x,y x,y".
      *
      * @param  array<int, mixed>|null  $zones
-     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string}>
+     * @return array<int, array{title: string, text: ?string, href: ?string, shape: string, points: string, label?: ?array, outline?: ?string}>
      */
     public static function sanitize(?array $zones): array
     {
@@ -50,8 +55,53 @@ class MapZone extends Model
                 'href' => filled($zone['href'] ?? null) ? mb_substr(trim($zone['href']), 0, 255) : null,
                 'shape' => $shape,
                 'points' => implode(' ', $points),
+                'label' => self::sanitizeLabel($zone['label'] ?? null),
+                'outline' => $shape === 'line' && ($zone['outline'] ?? null) === 'dashed' ? 'dashed' : null,
             ];
         })->filter()->values()->all();
+    }
+
+    /**
+     * Подпись на карте: плашка или надпись по воде, место, наклон, выноска к зоне.
+     *
+     * @return array{style: string, x: int, y: int, angle: int, leader: bool}|null
+     */
+    private static function sanitizeLabel(mixed $label): ?array
+    {
+        if (! is_array($label) || ! isset($label['x'], $label['y'])) {
+            return null;
+        }
+
+        return [
+            'style' => ($label['style'] ?? '') === 'water' ? 'water' : 'pill',
+            'x' => (int) max(0, min(config('map.width'), round((float) $label['x']))),
+            'y' => (int) max(0, min(config('map.height'), round((float) $label['y']))),
+            'angle' => (int) max(-90, min(90, round((float) ($label['angle'] ?? 0)))),
+            'leader' => (bool) ($label['leader'] ?? false),
+        ];
+    }
+
+    /**
+     * Куда указывает выноска подписи: середина линии или центр области.
+     *
+     * @param  array{shape: string, points: string}  $zone
+     * @return array{0: float, 1: float}
+     */
+    public static function anchorPoint(array $zone): array
+    {
+        preg_match_all('/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/', $zone['points'], $pairs, PREG_SET_ORDER);
+        $points = array_map(fn (array $pair) => [(float) $pair[1], (float) $pair[2]], $pairs);
+        if (! $points) {
+            return [0, 0];
+        }
+        if ($zone['shape'] === 'line') {
+            $middle = intdiv(count($points) - 1, 2);
+            $next = $points[min($middle + 1, count($points) - 1)];
+
+            return [($points[$middle][0] + $next[0]) / 2, ($points[$middle][1] + $next[1]) / 2];
+        }
+
+        return [array_sum(array_column($points, 0)) / count($points), array_sum(array_column($points, 1)) / count($points)];
     }
 
     /**

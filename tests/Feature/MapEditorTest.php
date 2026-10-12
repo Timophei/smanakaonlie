@@ -93,4 +93,25 @@ class MapEditorTest extends TestCase
             ->assertSee('data-title="Дом по координатам"', false)
             ->assertDontSee('data-title="Дом в Иркутске"', false);
     }
+
+    public function test_zone_labels_render_on_site_and_survive_saving(): void
+    {
+        Theme::query()->update(['map_zones' => null]);
+        $zones = MapZone::sanitize([
+            ['title' => 'Паромная переправа', 'shape' => 'line', 'points' => '680,512 960,524', 'outline' => 'dashed',
+                'label' => ['style' => 'pill', 'x' => 820.4, 'y' => 440, 'angle' => 0, 'leader' => true]],
+            ['title' => 'Иркут', 'shape' => 'polygon', 'points' => '0,0 100,0 100,100', 'outline' => 'dashed',
+                'label' => ['style' => 'water', 'x' => 770, 'y' => 690, 'angle' => -200]],
+        ]);
+        $this->assertSame(['style' => 'pill', 'x' => 820, 'y' => 440, 'angle' => 0, 'leader' => true], $zones[0]['label']);
+        $this->assertSame(-90, $zones[1]['label']['angle']);
+        $this->assertNull($zones[1]['outline']);
+        MapZone::replaceAll($zones);
+
+        $this->get('/')->assertOk()
+            ->assertSee('class="imap-label imap-label--pill"', false)
+            ->assertSee('class="imap-label imap-label--water"', false)
+            ->assertSee('<polyline class="imap-outline" points="680,512 960,524" />', false)
+            ->assertSee('class="imap-leader" x1="820" y1="440" x2="820" y2="518"', false);
+    }
 }

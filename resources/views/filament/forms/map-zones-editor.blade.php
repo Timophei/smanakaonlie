@@ -17,6 +17,13 @@
         .mze-point { fill: #fff; stroke: #1d4ed8; stroke-width: 3px; vector-effect: non-scaling-stroke; cursor: grab; }
         .mze-point.is-first { fill: #1d4ed8; stroke: #fff; }
         .mze-mid { fill: rgba(255, 255, 255, .8); stroke: #1d4ed8; stroke-width: 1.5px; vector-effect: non-scaling-stroke; cursor: copy; }
+        .mze-label { cursor: grab; }
+        .mze-label rect { fill: rgba(255, 255, 255, .94); stroke: rgba(0, 0, 0, .25); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+        .mze-label text { font-weight: 700; fill: #1f2933; font-family: sans-serif; pointer-events: none; }
+        .mze-label--water text { fill: #e1f2ff; font-style: italic; paint-order: stroke; stroke: rgba(9, 45, 90, .7); stroke-width: 3px; }
+        .mze-label.is-selected rect { stroke: #1d4ed8; stroke-width: 2.5px; }
+        .mze-label--water.is-selected text { stroke: #1d4ed8; }
+        .mze-leader { stroke: rgba(30, 41, 59, .85); stroke-width: 2px; vector-effect: non-scaling-stroke; }
         .mze-side { display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
         .mze-list { display: flex; flex-direction: column; gap: 4px; }
         .mze-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(128, 128, 128, .25); cursor: pointer; text-align: left; }
@@ -102,6 +109,25 @@
                             <option value="polygon">Область (утёс, посёлок, река)</option>
                             <option value="line">Линия (паром, мост, речка)</option>
                         </select></label>
+                    <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" :checked="!!zone.label" x-on:change="toggleLabel()">
+                        <span>Подпись на карте (название зоны)</span></label>
+                    <template x-if="zone.label">
+                        <div class="mze-side" style="gap: 8px; padding-left: 24px">
+                            <span class="mze-hint">Перетащите подпись на карте мышью или пальцем.</span>
+                            <label class="mze-field"><span>Вид</span>
+                                <select class="mze-input" x-model="zone.label.style" x-on:change="save()">
+                                    <option value="pill">Белая плашка</option>
+                                    <option value="water">Надпись по воде (для рек)</option>
+                                </select></label>
+                            <label class="mze-field"><span x-text="`Наклон: ${zone.label.angle}°`"></span>
+                                <input type="range" min="-60" max="60" step="1" x-model.number="zone.label.angle" x-on:input="save()"></label>
+                            <label style="display: flex; gap: 8px; align-items: center"><input type="checkbox" x-model="zone.label.leader" x-on:change="save()">
+                                <span>Выноска — линия от подписи к месту</span></label>
+                        </div>
+                    </template>
+                    <label style="display: flex; gap: 8px; align-items: center" x-show="zone.shape === 'line'">
+                        <input type="checkbox" :checked="zone.outline === 'dashed'" x-on:change="zone.outline = $event.target.checked ? 'dashed' : ''; save()">
+                        <span>Показывать линию белым пунктиром (как паром)</span></label>
                     <div class="mze-hint" x-text="`Точек: ${zone.points.length}` + (zone.points.length < (zone.shape === 'line' ? 2 : 3) ? ' — нужно ещё, иначе зона не сохранится' : '')"></div>
                     <div class="mze-buttons">
                         <button type="button" class="mze-btn mze-btn--primary" x-on:click="done()">Готово</button>

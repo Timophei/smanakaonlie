@@ -389,3 +389,12 @@ h3 { font-size: 22px; font-weight: 700; }
 .imap-locate { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 14px; }
 .imap-locate.is-on { background: #1a73e8; border-color: #1a73e8; color: #fff; }
 .imap-geo-status { flex-basis: 100%; }
+
+/* Подписи на карте: белые плашки, надписи по воде, выноски и пунктир парома */
+.imap-decor { pointer-events: none; }
+.imap-outline { fill: none; stroke: rgba(255, 255, 255, 0.95); stroke-width: 3; stroke-dasharray: 10 8; stroke-linecap: round; }
+.imap-leader { stroke: rgba(30, 41, 59, 0.85); stroke-width: 2; }
+.imap-leader-dot { fill: #fff; stroke: rgba(30, 41, 59, 0.85); stroke-width: 2; }
+.imap-label { position: absolute; z-index: 1; pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)); line-height: 1.15; }
+.imap-label--pill { padding: 0.35em 0.75em; border-radius: 0.5em; background: rgba(255, 255, 255, 0.94); color: #1f2933; font-weight: 700; font-size: clamp(11px, 1.15cqw, 17px); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35); }
+.imap-label--water { color: rgba(225, 242, 255, 0.95); font-style: italic; font-weight: 700; font-size: clamp(14px, 2cqw, 30px); letter-spacing: 0.04em; text-shadow: 0 1px 3px rgba(9, 45, 90, 0.7); }

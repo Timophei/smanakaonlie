@@ -16,7 +16,21 @@ window.mapZonesEditor = function (config) {
     href: zone.href || null,
     shape: zone.shape,
     points: zone.points.map((point) => point.join(',')).join(' '),
+    label: zone.label,
+    outline: zone.shape === 'line' && zone.outline === 'dashed' ? 'dashed' : null,
   });
+
+  // Куда указывает выноска: середина линии или центр области (как MapZone::anchorPoint)
+  const anchorOf = (zone) => {
+    const points = zone.points;
+    if (!points.length) return [0, 0];
+    if (zone.shape === 'line') {
+      const middle = Math.floor((points.length - 1) / 2);
+      const next = points[Math.min(middle + 1, points.length - 1)];
+      return [(points[middle][0] + next[0]) / 2, (points[middle][1] + next[1]) / 2];
+    }
+    return [points.reduce((sum, p) => sum + p[0], 0) / points.length, points.reduce((sum, p) => sum + p[1], 0) / points.length];
+  };
 
   const escape = (text) => String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -47,6 +61,10 @@ window.mapZonesEditor = function (config) {
         href: zone.href || '',
         shape: zone.shape === 'line' ? 'line' : 'polygon',
         points: parse(zone.points),
+        label: zone.label && Number.isFinite(Number(zone.label.x))
+          ? { style: zone.label.style === 'water' ? 'water' : 'pill', x: Number(zone.label.x), y: Number(zone.label.y), angle: Number(zone.label.angle) || 0, leader: Boolean(zone.label.leader) }
+          : null,
+        outline: zone.outline === 'dashed' ? 'dashed' : '',
       }));
       if (this.selected !== null && this.selected >= this.zones.length) this.selected = null;
       this.draw();
@@ -72,8 +90,19 @@ window.mapZonesEditor = function (config) {
       this.draw();
     },
 
+    toggleLabel() {
+      if (!this.zone) return;
+      if (this.zone.label) {
+        this.zone.label = null;
+      } else {
+        const [x, y] = this.zone.points.length ? anchorOf(this.zone) : [this.width / 2, this.height / 2];
+        this.zone.label = { style: 'pill', x: Math.round(x), y: Math.round(y), angle: 0, leader: false };
+      }
+      this.save();
+    },
+
     addZone() {
-      this.zones.push({ title: 'Новая зона', text: '', href: '', shape: 'polygon', points: [] });
+      this.zones.push({ title: 'Новая зона', text: '', href: '', shape: 'polygon', points: [], label: null, outline: '' });
       this.selected = this.zones.length - 1;
       this.save();
     },
@@ -133,7 +162,20 @@ window.mapZonesEditor = function (config) {
     },
 
     onPointerDown(event) {
-      const target = event.target.closest('[data-point], [data-mid], [data-zone]');
+      const target = event.target.closest('[data-label], [data-point], [data-mid], [data-zone]');
+
+      // Подпись выбранной зоны перетаскивается; подпись другой зоны — выбирает её
+      if (target?.dataset.label !== undefined) {
+        const index = Number(target.dataset.label);
+        if (index !== this.selected) {
+          this.select(index);
+          return;
+        }
+        event.preventDefault();
+        this.dragging = 'label';
+        this.$refs.svg.setPointerCapture(event.pointerId);
+        return;
+      }
 
       // Ничего не выбрано: клик выбирает зону под курсором
       if (!this.zone) {
@@ -178,7 +220,11 @@ window.mapZonesEditor = function (config) {
 
     onPointerMove(event) {
       if (this.dragging === null || !this.zone) return;
-      this.zone.points[this.dragging] = this.pointFromEvent(event);
+      if (this.dragging === 'label') {
+        [this.zone.label.x, this.zone.label.y] = this.pointFromEvent(event);
+      } else {
+        this.zone.points[this.dragging] = this.pointFromEvent(event);
+      }
       this.draw();
     },
 
@@ -217,6 +263,21 @@ window.mapZonesEditor = function (config) {
           html += `<circle data-point="${i}" cx="${point[0]}" cy="${point[1]}" r="${(i === this.dragging ? 10 : 8) * scale}" class="mze-point${i === 0 ? ' is-first' : ''}"><title>Тяните, чтобы сдвинуть. Двойной клик — удалить</title></circle>`;
         });
       }
+
+      // Подписи всех зон; у выбранной — перетаскиваемая, с выноской
+      this.zones.forEach((item, index) => {
+        if (!item.label) return;
+        const { x, y, angle, style, leader } = item.label;
+        if (leader && item.points.length) {
+          const [ax, ay] = anchorOf(item);
+          html += `<line x1="${x}" y1="${y}" x2="${ax}" y2="${ay}" class="mze-leader"></line>`;
+        }
+        const size = (style === 'water' ? 26 : 16) * Math.max(1, scale * 0.9);
+        const width = item.title.length * size * 0.62 + (style === 'water' ? 0 : size * 1.2);
+        html += `<g data-label="${index}" class="mze-label mze-label--${style}${index === this.selected ? ' is-selected' : ''}" transform="translate(${x} ${y}) rotate(${angle})">
+          ${style === 'water' ? '' : `<rect x="${-width / 2}" y="${-size * 0.95}" width="${width}" height="${size * 1.9}" rx="${size * 0.45}"></rect>`}
+          <text text-anchor="middle" dy="0.35em" font-size="${size}">${escape(item.title)}</text></g>`;
+      });
 
       svg.innerHTML = html;
     },
