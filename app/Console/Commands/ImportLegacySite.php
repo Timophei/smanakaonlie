@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Article;
 use App\Models\CatalogPage;
 use App\Models\Owner;
+use App\Models\OwnerPhone;
 use App\Models\Place;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -109,7 +110,14 @@ class ImportLegacySite extends Command
         $place->status ??= 'draft';
 
         if (! $place->owner_id && ! empty($data['phones'])) {
-            $place->owner_id = Owner::firstOrCreate(['phone' => $data['phones'][0]], ['name' => $data['title']])->id;
+            $owner = OwnerPhone::firstWhere('number', $data['phones'][0])?->owner;
+            if (! $owner) {
+                $owner = Owner::create(['name' => $data['title']]);
+                foreach ($data['phones'] as $sort => $number) {
+                    $owner->phones()->create(['number' => $number, 'sort' => $sort]);
+                }
+            }
+            $place->owner_id = $owner->id;
         }
 
         $place->save();

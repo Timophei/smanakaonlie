@@ -116,9 +116,9 @@
             @include('site.partials.price', ['place' => $place, 'class' => 'price price--big'])
             @if ($place->price_note)<div class="small muted">{{ $place->price_note }}</div>@endif
 
-            @if ($place->owner?->phone)
+            @if ($place->owner?->phones->isNotEmpty())
                 <button type="button" class="btn" data-phone-url="{{ route('place.phone', $place, false) }}" data-token="{{ csrf_token() }}">
-                    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-label>Показать телефон</span>
+                    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-label>{{ $place->owner->phones->count() > 1 ? 'Показать телефоны' : 'Показать телефон' }}</span>
                 </button>
             @endif
             @foreach ($place->owner?->contacts ?? [] as $contact)
