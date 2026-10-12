@@ -39,6 +39,19 @@
             <img src="{{ $map['image'] }}" width="{{ $map['width'] }}" height="{{ $map['height'] }}"
                  alt="Рисованная карта Шаманки: Шаманский утёс, река Шаманка, Иркут, паромная переправа и подвесной мост">
             <svg class="imap-zones" viewBox="0 0 {{ $map['width'] }} {{ $map['height'] }}" role="group" aria-label="Места на карте">
+                {{-- Пунктир линий (паром) и выноски от подписей к местам --}}
+                <g class="imap-decor" aria-hidden="true">
+                    @foreach ($map['zones'] as $zone)
+                        @if (($zone['outline'] ?? null) === 'dashed')
+                            <polyline class="imap-outline" points="{{ $zone['points'] }}" />
+                        @endif
+                        @if (! empty($zone['label']['leader']))
+                            @php([$ax, $ay] = \App\Models\MapZone::anchorPoint($zone))
+                            <line class="imap-leader" x1="{{ $zone['label']['x'] }}" y1="{{ $zone['label']['y'] }}" x2="{{ $ax }}" y2="{{ $ay }}" />
+                            <circle class="imap-leader-dot" cx="{{ $ax }}" cy="{{ $ay }}" r="4" />
+                        @endif
+                    @endforeach
+                </g>
                 @foreach ($map['zones'] as $zone)
                     <{{ $zone['shape'] === 'line' ? 'polyline' : 'polygon' }}
                         class="imap-zone imap-zone--{{ $zone['shape'] }}" points="{{ $zone['points'] }}"
@@ -46,6 +59,13 @@
                         data-title="{{ $zone['title'] }}" data-text="{{ $zone['text'] }}" data-href="{{ $zone['href'] }}" />
                 @endforeach
             </svg>
+            {{-- Подписи на карте: плашки и надписи по воде, размер — от ширины карты --}}
+            @foreach ($map['zones'] as $zone)
+                @if (! empty($zone['label']))
+                    <span class="imap-label imap-label--{{ $zone['label']['style'] }}" aria-hidden="true"
+                          style="left: {{ round($zone['label']['x'] / $map['width'] * 100, 2) }}%; top: {{ round($zone['label']['y'] / $map['height'] * 100, 2) }}%; --angle: {{ $zone['label']['angle'] }}deg">{{ $zone['title'] }}</span>
+                @endif
+            @endforeach
             @foreach ($markers as $marker)
                 <button type="button" class="imap-pin imap-pin--{{ $marker->category }}"
                         style="left: {{ $marker->map_x }}%; top: {{ $marker->map_y }}%"
