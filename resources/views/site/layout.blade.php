@@ -19,7 +19,7 @@
         };
     @endphp
     <title>{!! $pageTitle !!}</title>
-    <meta name="description" content="{!! $pageDescription !!}">
+    <meta name="description" content="{!! Str::squish($pageDescription) !!}">
     @if ($seo?->seo_keywords)<meta name="keywords" content="{{ $seo->seo_keywords }}">@endif
     <link rel="icon" type="image/png" href="{{ $theme?->iconUrl() ?? '/img/logos/autumn-icon.png' }}">
     <link rel="canonical" href="{{ $canonical }}">
@@ -27,9 +27,11 @@
     <meta property="og:site_name" content="Шаманка.online">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:url" content="{{ $canonical }}">
-    <meta property="og:title" content="{!! $seo?->og_title ? e($seo->og_title) : $pageTitle !!}">
-    <meta property="og:description" content="{!! $seo?->og_description ? e($seo->og_description) : $pageDescription !!}">
+    {{-- Превью в мессенджерах: без переносов строк, они ломают карточку ссылки --}}
+    <meta property="og:title" content="{!! $seo?->og_title ? e(Str::squish($seo->og_title)) : $pageTitle !!}">
+    <meta property="og:description" content="{!! $seo?->og_description ? e(Str::squish($seo->og_description)) : Str::squish($pageDescription) !!}">
     <meta property="og:image" content="{{ $ogImageUrl }}">
+    <meta property="og:image:alt" content="{!! $pageTitle !!}">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

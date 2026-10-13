@@ -79,8 +79,8 @@ class LegacyImportTest extends TestCase
             ->assertSee('<meta name="keywords" content="тропа Шаманка', false);
 
         $this->get('/')->assertOk()
-            ->assertSee('<meta property="og:title" content="Шаманка">', false)
-            ->assertSee('https://shamanka.online/storage/legacy/og-home-', false);
+            ->assertSee('<meta name="keywords" content="Шаманка Открой шаманку', false)
+            ->assertSee('https://shamanka.online/storage/seo/og-home.jpg', false);
     }
 
     public function test_admin_sections_for_every_category_open(): void
