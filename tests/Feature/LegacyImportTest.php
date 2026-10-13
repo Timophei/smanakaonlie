@@ -80,7 +80,7 @@ class LegacyImportTest extends TestCase
 
         $this->get('/')->assertOk()
             ->assertSee('<meta name="keywords" content="Шаманка Открой шаманку', false)
-            ->assertSee('https://shamanka.online/storage/seo/og-home.jpg', false);
+            ->assertSee('https://shamanka.online/img/og/', false);
     }
 
     public function test_admin_sections_for_every_category_open(): void

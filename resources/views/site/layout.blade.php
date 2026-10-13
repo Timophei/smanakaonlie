@@ -11,6 +11,10 @@
         $pageTitle = trim($__env->yieldContent('title')) ?: e($seo?->seo_title ?: 'Шаманка — отдых, маршруты и красивые места у Иркута');
         $pageDescription = trim($__env->yieldContent('description')) ?: e($seo?->seo_description ?: 'Путеводитель по Шаманке Иркутской области: тропа на утёс, Лес чудес, места для пикника, транспорт, жильё, бани и местные услуги.');
         $ogImage = $seo?->og_image ?: ($seoImage ?? null);
+        // Общая картинка превью главной — в цветах текущей темы (public/img/og/<тема>.jpg)
+        if ($ogImage === 'seo/og-home.jpg' && $theme && is_file(public_path("img/og/{$theme->slug}.jpg"))) {
+            $ogImage = "/img/og/{$theme->slug}.jpg";
+        }
         $ogImageUrl = match (true) {
             ! $ogImage => $root.'/img/logos/autumn-logo.png',
             str_starts_with($ogImage, 'http') => $ogImage,
