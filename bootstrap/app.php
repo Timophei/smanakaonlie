@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(RedirectWww::class);
+        // Счётчик просмотров шлёт sendBeacon без токена; он ничего не меняет, кроме журнала просмотров
+        $middleware->validateCsrfTokens(except: ['a/hit']);
+        // Печать QR-визиток и прочие страницы только для админа ведут на вход в админку
+        $middleware->redirectGuestsTo('/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
