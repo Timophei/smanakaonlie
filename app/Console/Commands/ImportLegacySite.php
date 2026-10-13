@@ -155,7 +155,10 @@ class ImportLegacySite extends Command
     private function importHome(array $seo): void
     {
         $page = CatalogPage::firstOrNew(['category' => 'home']);
-        $page->fill([...$this->seo($seo), 'og_image' => $page->og_image ?? $this->image($seo['og_image_file'] ?? null)]);
+        // Заполняем только пустое: новое превью главной не затирается старым при повторном переносе
+        foreach ([...$this->seo($seo), 'og_image' => $this->image($seo['og_image_file'] ?? null)] as $field => $value) {
+            $page->{$field} ??= $value;
+        }
         $page->save();
         $this->line('главная /');
     }
