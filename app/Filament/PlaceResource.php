@@ -200,6 +200,9 @@ abstract class PlaceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('qr')->label('QR-визитка')->icon('heroicon-o-qr-code')
+                    ->url(fn (Place $record): string => route('qr.cards', ['places' => $record->id], false))
+                    ->openUrlInNewTab(),
                 Tables\Actions\ReplicateAction::make()->label('Дублировать')
                     ->excludeAttributes(['clicks_count'])
                     ->beforeReplicaSaved(function (Place $replica): void {
@@ -220,8 +223,21 @@ abstract class PlaceResource extends Resource
                         ->form([Forms\Components\Select::make('tag_id')->label('Метка')->options(fn () => Tag::orderBy('name')->pluck('name', 'id'))->required()])
                         ->action(fn (Collection $records, array $data) => $records->each(fn (Place $place) => $place->tags()->syncWithoutDetaching([$data['tag_id']])))
                         ->deselectRecordsAfterCompletion(),
+                    Tables\Actions\BulkAction::make('qr')->label('QR-визитки на печать')->icon('heroicon-o-qr-code')
+                        ->action(fn (Collection $records) => redirect()->route('qr.cards', ['places' => implode(',', $records->modelKeys())]))
+                        ->deselectRecordsAfterCompletion(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * Кнопка «QR-визитка» в шапке карточки объекта.
+     */
+    public static function qrCardAction(): \Filament\Actions\Action
+    {
+        return \Filament\Actions\Action::make('qr')->label('QR-визитка')->icon('heroicon-o-qr-code')->color('gray')
+            ->url(fn (Place $record): string => route('qr.cards', ['places' => $record->id], false))
+            ->openUrlInNewTab();
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PageView;
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -65,5 +66,13 @@ class AnalyticsTest extends TestCase
             ->assertSee('osen')
             ->assertSee('/stati/tropa/')
             ->assertSee('Телефон');
+    }
+
+    public function test_counter_endpoint_is_excluded_from_csrf_check(): void
+    {
+        // В тестах проверка CSRF отключена, поэтому смотрим сам список исключений
+        $excluded = (new \ReflectionProperty(ValidateCsrfToken::class, 'neverVerify'))->getValue();
+
+        $this->assertContains('a/hit', $excluded);
     }
 }
