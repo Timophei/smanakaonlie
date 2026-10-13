@@ -96,4 +96,20 @@ class SitePagesTest extends TestCase
             ->assertSee('/admin/owners/'.$owner->id.'/edit', false);
         $this->get("/admin/owners/{$owner->id}/edit")->assertOk()->assertSee('Добавить номер');
     }
+
+    public function test_place_gallery_opens_all_photos_in_lightbox(): void
+    {
+        $place = Place::factory()->create([
+            'cover' => 'places/covers/main.jpg',
+            'gallery' => array_map(fn (int $i) => "places/gallery/{$i}.jpg", range(1, 6)),
+        ]);
+
+        $html = $this->get('/'.$place->path.'/')->assertOk()
+            ->assertSee('data-lightbox="Фото: '.$place->title.'"', false)
+            ->assertSee('+2 фото')
+            ->getContent();
+
+        $this->assertSame(7, substr_count($html, 'data-lightbox-src='));
+        $this->assertSame(2, substr_count($html, '<span hidden data-lightbox-src='));
+    }
 }

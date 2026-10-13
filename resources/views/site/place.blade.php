@@ -38,16 +38,26 @@
         </div>
     </div>
 
-    @if ($place->cover || $gallery)
-        <div class="shots">
-            <img src="{{ $photo($place->cover ?: $gallery[0]) }}" alt="{{ $place->title }}">
-            @if (count($gallery) > ($place->cover ? 0 : 1))
+    @php($photos = array_values(array_unique(array_filter([$place->cover, ...$gallery]))))
+    @if ($photos)
+        {{-- Превью: большое фото и до четырёх маленьких; нажатие открывает все фото на весь экран --}}
+        <div class="shots" data-lightbox="Фото: {{ $place->title }}">
+            <button type="button" class="shots-main" data-lightbox-src="{{ $photo($photos[0]) }}" data-lightbox-caption="{{ $place->title }}" aria-label="Открыть фото на весь экран">
+                <img src="{{ $photo($photos[0]) }}" alt="{{ $place->title }}">
+            </button>
+            @if (count($photos) > 1)
                 <div class="shots-grid">
-                    @foreach (array_slice($gallery, $place->cover ? 0 : 1, 4) as $i => $path)
-                        <img src="{{ $photo($path) }}" alt="{{ $place->title }}, фото {{ $i + 2 }}" loading="lazy">
+                    @foreach (array_slice($photos, 1, 4) as $i => $path)
+                        <button type="button" data-lightbox-src="{{ $photo($path) }}" data-lightbox-caption="{{ $place->title }}" aria-label="Открыть фото {{ $i + 2 }}">
+                            <img src="{{ $photo($path) }}" alt="{{ $place->title }}, фото {{ $i + 2 }}" loading="lazy">
+                            @if ($i === 3 && count($photos) > 5)<span class="shots-more">+{{ count($photos) - 5 }} фото</span>@endif
+                        </button>
                     @endforeach
                 </div>
             @endif
+            @foreach (array_slice($photos, 5) as $path)
+                <span hidden data-lightbox-src="{{ $photo($path) }}" data-lightbox-caption="{{ $place->title }}"></span>
+            @endforeach
         </div>
     @endif
 
