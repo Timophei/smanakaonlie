@@ -31,6 +31,20 @@
     <meta property="og:title" content="{!! $seo?->og_title ? e(Str::squish($seo->og_title)) : $pageTitle !!}">
     <meta property="og:description" content="{!! $seo?->og_description ? e(Str::squish($seo->og_description)) : Str::squish($pageDescription) !!}">
     <meta property="og:image" content="{{ $ogImageUrl }}">
+    @php
+        // Размер и тип картинки превью — без них некоторые мессенджеры не строят большую карточку
+        $ogFile = match (true) {
+            ! $ogImage || str_starts_with($ogImage, 'http') => public_path('img/logos/autumn-logo.png'),
+            str_starts_with($ogImage, '/') => public_path(ltrim($ogImage, '/')),
+            default => storage_path('app/public/'.$ogImage),
+        };
+        $ogSize = is_file($ogFile) ? @getimagesize($ogFile) : false;
+    @endphp
+    @if ($ogSize)
+        <meta property="og:image:width" content="{{ $ogSize[0] }}">
+        <meta property="og:image:height" content="{{ $ogSize[1] }}">
+        <meta property="og:image:type" content="{{ $ogSize['mime'] }}">
+    @endif
     <meta property="og:image:alt" content="{!! $pageTitle !!}">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
