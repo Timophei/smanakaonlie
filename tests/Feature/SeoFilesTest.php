@@ -61,6 +61,10 @@ class SeoFilesTest extends TestCase
             ->assertSee('<meta property="og:title" content="Шаманка на Иркуте — путеводитель: тропа на утёс, жильё, бани">', false)
             ->getContent();
 
+        if (is_file(storage_path('app/public/seo/og-home.jpg'))) {
+            $this->assertStringContainsString('<meta property="og:image:width" content="1200">', $html);
+        }
+
         preg_match('/<meta property="og:description" content="([^"]*)"/', $html, $match);
         $this->assertStringNotContainsString("\n", $match[1]);
         $this->assertStringContainsString('33 богатыря', $match[1]);
