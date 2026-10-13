@@ -17,6 +17,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin-print/qr/{place}.svg', [QrCardController::class, 'svg'])->name('qr.svg');
 });
 
+// Короткая ссылка с QR-визитки: сразу на страницу объекта
+Route::get('/q/{place}', [QrCardController::class, 'go'])->whereNumber('place')->name('qr.go');
+
 Route::post('/a/hit', [AnalyticsController::class, 'hit'])->middleware('throttle:120,1')->name('analytics.hit');
 
 Route::middleware('throttle:30,1')->group(function () {

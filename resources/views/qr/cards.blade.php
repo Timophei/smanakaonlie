@@ -38,15 +38,15 @@
         .card { width: 90mm; height: 50mm; overflow: hidden; display: flex; flex-direction: column; background: #fffdf8; }
         .card-top { height: 12.5mm; flex: none; display: flex; align-items: center; padding: 0 4.5mm; background: var(--t-header-bg); }
         .card-top img { height: 7.4mm; width: auto; display: block; }
-        .card-body { flex: 1; display: flex; gap: 3mm; padding: 3mm 3.5mm 3mm 4.5mm; align-items: center; }
+        .card-body { flex: 1; display: flex; gap: 4mm; padding: 3mm 4.5mm; align-items: center; }
         .card-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1.1mm; }
         .card-kicker { font-size: 2.3mm; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--t-primary); }
         .card-name { font-weight: 800; line-height: 1.12; color: #2a1d15; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .card-hint { font-size: 2.35mm; line-height: 1.3; color: #5c534a; font-weight: 500; }
         .card-site { font-size: 2.6mm; font-weight: 800; color: #2a1d15; }
-        .card-qr { position: relative; width: 30mm; height: 30mm; flex: none; }
+        .card-qr { position: relative; width: 22mm; height: 22mm; flex: none; }
         .card-qr svg { width: 100%; height: 100%; display: block; }
-        .card-qr img { position: absolute; left: 50%; top: 50%; width: 7.5mm; height: 7.5mm; translate: -50% -50%; padding: .9mm; border-radius: 1.6mm; background: var(--t-header-bg); box-shadow: 0 0 0 .7mm #fff; object-fit: contain; }
+        .card-qr img { position: absolute; left: 50%; top: 50%; width: 5.4mm; height: 5.4mm; translate: -50% -50%; padding: .6mm; border-radius: 1.6mm; background: var(--t-header-bg); box-shadow: 0 0 0 .7mm #fff; object-fit: contain; }
 
         @media print {
             body { background: none; }
@@ -68,7 +68,7 @@
         @endif
         <button type="button" class="primary" onclick="window.print()">Печать / PDF</button>
         <small>В окне печати: масштаб 100 %, поля «Нет», колонтитулы выключить. «Сохранить как PDF» — файл для типографии.
-            Код ведёт на страницу объекта; переходы по визиткам видны в «Аналитике» с меткой qr.</small>
+            Код и ссылка на визитке ведут сразу на страницу объекта; переходы по визиткам видны в «Аналитике» с меткой qr.</small>
     </div>
 
     <div class="pages">
@@ -82,8 +82,8 @@
                             <div class="card-text">
                                 <div class="card-kicker">{{ $kickers[$card['place']->category] ?? 'Шаманка' }}</div>
                                 <div class="card-name" style="font-size: {{ mb_strlen($title) <= 18 ? '4.6mm' : (mb_strlen($title) <= 30 ? '3.9mm' : '3.3mm') }}">{{ $title }}</div>
-                                <div class="card-hint">Фото, цены и контакты — наведите камеру на код</div>
-                                <div class="card-site">shamanka.online</div>
+                                <div class="card-hint">Фото, цены и контакты — наведите камеру на QR-код</div>
+                                <div class="card-site">{{ $card['label'] }}</div>
                             </div>
                             <div class="card-qr">
                                 {!! $card['qr'] !!}
