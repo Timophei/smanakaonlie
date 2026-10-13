@@ -129,9 +129,15 @@ h3 { font-size: 22px; font-weight: 700; }
 
 /* Страница объекта */
 .shots { display: flex; flex-wrap: wrap; gap: 10px; }
-.shots > img { flex: 2 1 420px; min-width: 0; height: 420px; object-fit: cover; border-radius: var(--radius); }
+.shots button { position: relative; display: block; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; }
+.shots-main { flex: 2 1 420px; min-width: 0; border-radius: var(--radius); }
+.shots-main img { display: block; width: 100%; height: 420px; object-fit: cover; transition: transform 0.3s; }
+.shots-grid button { border-radius: 12px; }
+.shots button:hover img { transform: scale(1.03); }
+.shots button:focus-visible { outline: 3px solid var(--t-primary); outline-offset: 2px; }
+.shots-more { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(20, 14, 8, 0.55); color: #fff; font-size: 20px; font-weight: 700; }
 .shots-grid { flex: 1 1 300px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.shots-grid img { width: 100%; height: 205px; object-fit: cover; border-radius: 12px; }
+.shots-grid img { display: block; width: 100%; height: 205px; object-fit: cover; transition: transform 0.3s; }
 .columns { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 28px 40px; }
 .main { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
 .main h2 { font-size: 28px; font-weight: 700; letter-spacing: 0; }
@@ -153,7 +159,7 @@ h3 { font-size: 22px; font-weight: 700; }
   .place-side { border-left: 0; border-top: 1px solid var(--t-border); }
   .contact { padding: 24px 20px; }
   .book { position: static; }
-  .shots > img { height: 260px; }
+  .shots-main img { height: 260px; }
   .shots-grid img { height: 130px; }
 }
 
@@ -351,7 +357,7 @@ h3 { font-size: 22px; font-weight: 700; }
 }
 
 /* Просмотр фото на весь экран */
-.photo-slide img { cursor: zoom-in; }
+.photo-slide img, .gallery-block img[data-lightbox-src] { cursor: zoom-in; }
 .lightbox:focus { outline: none; }
 .lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0c0a08; color: #fff; overflow: hidden; }
 .lightbox-btn:focus:not(:focus-visible) { outline: none; }

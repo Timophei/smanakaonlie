@@ -99,11 +99,11 @@
                 <h2>Шаманка в фото</h2>
                 <p class="lead">Снимки гостей и местных жителей. Пришлите свои — опубликуем с подписью и ссылкой на вас.</p>
             </div>
-            <div class="carousel carousel--always" data-carousel data-lightbox>
+            <div class="carousel carousel--always" data-carousel data-lightbox="Шаманка в фото">
                 <button type="button" class="carousel-btn carousel-btn--prev" data-carousel-prev aria-label="Предыдущее фото"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button>
                 <div class="row carousel-track" data-carousel-track>
                     @foreach ($photos as $photo)
-                        <figure class="photo-slide">
+                        <figure class="photo-slide" data-lightbox-src="{{ $photo->url() }}" data-lightbox-caption="{{ $photo->alt }}">
                             <img src="{{ $photo->url() }}" alt="{{ $photo->alt }}" loading="lazy">
                             @if ($photo->authorLabel())
                                 <figcaption class="photo-credit">Фото:
