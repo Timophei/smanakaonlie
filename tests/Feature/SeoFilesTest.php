@@ -57,7 +57,7 @@ class SeoFilesTest extends TestCase
     public function test_home_has_large_share_preview_without_line_breaks(): void
     {
         $html = $this->get('https://shamanka.online/')->assertOk()
-            ->assertSee('<meta property="og:image" content="https://shamanka.online/storage/seo/og-home.jpg">', false)
+            ->assertSee('<meta property="og:image" content="https://shamanka.online/img/og/', false)
             ->assertSee('<meta property="og:title" content="Шаманка на Иркуте — путеводитель: тропа на утёс, жильё, бани">', false)
             ->getContent();
 
@@ -68,5 +68,14 @@ class SeoFilesTest extends TestCase
         preg_match('/<meta property="og:description" content="([^"]*)"/', $html, $match);
         $this->assertStringNotContainsString("\n", $match[1]);
         $this->assertStringContainsString('33 богатыря', $match[1]);
+    }
+
+    public function test_home_share_image_follows_the_season_theme(): void
+    {
+        foreach (['summer', 'winter', 'new-year'] as $slug) {
+            $this->get("https://shamanka.online/?tema={$slug}")->assertOk()
+                ->assertSee('<meta property="og:image" content="https://shamanka.online/img/og/'.$slug.'.jpg">', false)
+                ->assertSee('<meta property="og:image:width" content="1200">', false);
+        }
     }
 }
