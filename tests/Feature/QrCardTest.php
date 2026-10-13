@@ -34,10 +34,12 @@ class QrCardTest extends TestCase
 
         $this->assertSame(10, substr_count($html, 'class="card"'));
         $this->assertSame(10, substr_count($html, '<svg'));
-        $this->assertSame(
-            'https://shamanka.online/uslugi/gostinitsy/domikivSham/?utm_source=qr&utm_medium=card&utm_campaign=domikivSham',
-            QrCardController::url($place),
-        );
+        $this->assertSame("https://shamanka.online/q/{$place->id}", QrCardController::url($place));
+        $this->assertStringContainsString("shamanka.online/q/{$place->id}</div>", $html);
+
+        auth()->logout();
+        $this->get("/q/{$place->id}")
+            ->assertRedirect('/uslugi/gostinitsy/domikivSham/?utm_source=qr&utm_medium=card&utm_campaign=domikivSham');
     }
 
     public function test_several_places_and_single_card_mode_and_svg_download(): void
